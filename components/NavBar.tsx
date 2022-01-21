@@ -38,10 +38,10 @@ export default function Gslr() {
               alignItems="center"
             >
               <SiTiktok />
-              <VisuallyHidden>Kyle Vasulka's Website</VisuallyHidden>
+              <VisuallyHidden>Kyle Vasulka&apos;s Website</VisuallyHidden>
             </chakra.a>
             <chakra.h1 fontSize="xl" fontWeight="medium" ml="2">
-              Kyle Vasulka's Website
+              Kyle Vasulka&apos;s Website
             </chakra.h1>
           </Flex>
           <HStack display="flex" alignItems="center" spacing={1}>
