@@ -15,10 +15,13 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { SiTiktok } from "react-icons/si";
+import { useColorMode } from "@chakra-ui/color-mode";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 export default function Gslr() {
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
     <React.Fragment>
@@ -56,10 +59,11 @@ export default function Gslr() {
               <Button variant="ghost">Blog</Button>
               <Button variant="ghost">Company</Button>
               <Button variant="ghost">Sign in</Button>
+              <IconButton aria-label="Toggle Mode" onClick={toggleColorMode}>
+                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              </IconButton>
             </HStack>
-            <Button colorScheme="brand" size="sm">
-              Get Started
-            </Button>
+
             <Box display={{ base: "inline-flex", md: "none" }}>
               <IconButton
                 display={{ base: "flex", md: "none" }}
@@ -106,6 +110,15 @@ export default function Gslr() {
                 <Button w="full" variant="ghost">
                   Sign in
                 </Button>
+
+                {/* <IconButton
+                  mt={4}
+                  aria-label="Toggle Mode"
+                  onClick={toggleColorMode}
+                  variant={colorMode === "light" ? "ghost" : "solid"}
+                >
+                  {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+                </IconButton> */}
               </VStack>
             </Box>
           </HStack>
