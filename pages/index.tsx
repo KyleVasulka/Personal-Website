@@ -3,7 +3,12 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import Navbar from "../components/NavBar";
 
+import { useColorMode } from "@chakra-ui/color-mode";
+
+
+
 export default function Home() {
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <div className={styles.container}>
       <Head>
@@ -21,7 +26,7 @@ export default function Home() {
 
         <p className={styles.description}>
           Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
+          {colorMode === "light" ? <code className={styles.lightcode}>pages/index.js</code> : <code className={styles.code}>pages/index.js</code>}
         </p>
 
         <div className={styles.grid}>
