@@ -1,9 +1,33 @@
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
 import { ArrowUpRight, Mail } from "lucide-react";
+import Image from "next/image";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+export const dynamic = "force-dynamic";
+
+const heroImagesDirectory = join(process.cwd(), "public", "heroimages");
+
+function getRandomHeroImage() {
+  try {
+    const heroImages = readdirSync(heroImagesDirectory)
+      .filter((fileName) => fileName.toLowerCase().endsWith(".png"))
+      .sort();
+
+    if (heroImages.length === 0) {
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * heroImages.length);
+    return `/heroimages/${encodeURIComponent(heroImages[randomIndex])}`;
+  } catch {
+    return null;
+  }
+}
 
 const historySections = [
   {
@@ -254,6 +278,8 @@ const links = [
 ];
 
 export default function Home() {
+  const heroImage = getRandomHeroImage();
+
   return (
     <main className="site-shell">
       <ScrollReveal />
@@ -295,16 +321,26 @@ export default function Home() {
             </div>
           </div>
 
-          <div
-            className="profile-panel"
-            aria-label="Profile summary"
-            data-reveal
-          >
-            <p className="eyebrow">Current focus</p>
-            <p>
-              Building AI-accelerated apps, developer tools, media systems, and
-              ambitious prototypes across software, hardware, AR, and robotics.
-            </p>
+          <div className="hero-visual" aria-label="Project illustration" data-reveal>
+            {heroImage && (
+              <Image
+                alt=""
+                className="hero-portrait"
+                height={760}
+                priority
+                sizes="(max-width: 820px) 96vw, 34rem"
+                src={heroImage}
+                width={700}
+              />
+            )}
+            <div className="hero-aura" aria-hidden="true" />
+            <div className="profile-panel" aria-label="Profile summary">
+              <p className="eyebrow">Current focus</p>
+              <p>
+                Building AI-accelerated apps, developer tools, media systems, and
+                ambitious prototypes across software, hardware, AR, and robotics.
+              </p>
+            </div>
           </div>
         </div>
       </section>
