@@ -1,5 +1,7 @@
 import { ArrowUpRight, Mail } from "lucide-react";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
+import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -254,6 +256,7 @@ const links = [
 export default function Home() {
   return (
     <main className="site-shell">
+      <ScrollReveal />
       <section className="hero" aria-labelledby="hero-title">
         <nav className="nav" aria-label="Primary navigation">
           <a
@@ -271,7 +274,7 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="hero-grid">
+        <div className="hero-grid" data-reveal>
           <div className="hero-copy">
             <p className="eyebrow">Personal website</p>
             <h1 id="hero-title">Kyle Vasulka</h1>
@@ -292,7 +295,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="profile-panel" aria-label="Profile summary">
+          <div
+            className="profile-panel"
+            aria-label="Profile summary"
+            data-reveal
+          >
             <p className="eyebrow">Current focus</p>
             <p>
               Building AI-accelerated apps, developer tools, media systems, and
@@ -307,7 +314,7 @@ export default function Home() {
         id="work"
         aria-labelledby="work-title"
       >
-        <div className="section-header">
+        <div className="section-header" data-reveal>
           <p className="eyebrow">Project history</p>
           <h2 id="work-title">A long trail of shipped experiments.</h2>
           <p>
@@ -315,16 +322,32 @@ export default function Home() {
             and hardware test rigs.
           </p>
         </div>
+        <HarmonicPianoShowcase />
+        <ProjectModelScene />
         <div className="history-list">
-          {historySections.map((section) => (
-            <section className="history-band" key={section.period}>
+          {historySections.map((section, sectionIndex) => (
+            <section
+              className="history-band"
+              data-reveal
+              key={section.period}
+              style={{ "--reveal-delay": `${sectionIndex * 80}ms` } as React.CSSProperties}
+            >
               <div className="history-band-header">
                 <p className="eyebrow">{section.period}</p>
                 <h3>{section.title}</h3>
               </div>
               <div className="history-grid">
-                {section.items.map((item) => (
-                  <article className="history-card" key={item.name}>
+                {section.items.map((item, itemIndex) => (
+                  <article
+                    className="history-card"
+                    data-reveal
+                    key={item.name}
+                    style={
+                      {
+                        "--reveal-delay": `${Math.min(itemIndex, 6) * 45}ms`,
+                      } as React.CSSProperties
+                    }
+                  >
                     <div>
                       <h4>{item.name}</h4>
                       <p>{item.description}</p>
@@ -357,6 +380,7 @@ export default function Home() {
         className="section about"
         id="about"
         aria-labelledby="about-title"
+        data-reveal
       >
         <div>
           <p className="eyebrow">About</p>

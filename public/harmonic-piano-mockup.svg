@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 820" role="img" aria-label="Harmonic Piano synthesizer interface mockup">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#08090b"/>
+      <stop offset=".52" stop-color="#101827"/>
+      <stop offset="1" stop-color="#08090b"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" x2="1">
+      <stop offset="0" stop-color="#4b2c16"/>
+      <stop offset=".45" stop-color="#9a6636"/>
+      <stop offset="1" stop-color="#32190d"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#050b1c"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" values="0 0 0 0 0.19 0 0 0 0 0.82 0 0 0 0 1 0 0 0 .7 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="820" fill="url(#bg)"/>
+  <circle cx="1210" cy="140" r="160" fill="#f0b477" opacity=".09"/>
+  <circle cx="1020" cy="710" r="240" fill="#31d9ff" opacity=".05"/>
+  <g transform="translate(92 95)">
+    <text x="0" y="0" fill="#f0b477" font-family="Arial, Helvetica, sans-serif" font-size="54" letter-spacing="14">HARMONIC</text>
+    <text x="0" y="70" fill="#f0b477" font-family="Arial, Helvetica, sans-serif" font-size="54" letter-spacing="14">PIANO</text>
+    <text x="2" y="126" fill="#f0b477" font-family="Arial, Helvetica, sans-serif" font-size="19" letter-spacing="6">SCULPT HARMONICS</text>
+    <text x="2" y="168" fill="#cbc5ba" font-family="Arial, Helvetica, sans-serif" font-size="19">Draw the sound. Play your world.</text>
+  </g>
+  <g transform="translate(310 76) rotate(3)">
+    <path d="M40 56C44 25 67 6 99 8l785 51c32 2 56 28 54 59l-26 392c-2 32-29 56-61 54L66 513c-32-2-56-29-54-61L40 56Z" fill="url(#wood)" stroke="#f0b477" stroke-width="2"/>
+    <path d="M93 60l770 50-22 330-770-50 22-330Z" fill="#08090b" stroke="#2b3448"/>
+    <path d="M125 95l560 36-13 204-560-36 13-204Z" fill="url(#screen)" stroke="#193b5d"/>
+    <g stroke="#29d8ff" stroke-width="3" fill="none" filter="url(#glow)">
+      <path d="M145 258C190 120 214 170 235 153S260 237 291 211 315 250 346 220 370 262 405 238 430 274 465 248 508 292 548 268 610 305 650 295"/>
+    </g>
+    <g fill="#29d8ff" opacity=".42">
+      <rect x="145" y="298" width="25" height="68"/>
+      <rect x="180" y="310" width="25" height="56"/>
+      <rect x="215" y="326" width="25" height="40"/>
+      <rect x="250" y="334" width="25" height="32"/>
+      <rect x="285" y="342" width="25" height="24"/>
+      <rect x="320" y="348" width="25" height="18"/>
+      <rect x="355" y="352" width="25" height="14"/>
+      <rect x="390" y="356" width="25" height="10"/>
+      <rect x="425" y="358" width="25" height="8"/>
+    </g>
+    <g transform="translate(705 130)" fill="#10131c" stroke="#383f4f">
+      <rect x="0" y="0" width="142" height="250" rx="10"/>
+      <text x="20" y="35" fill="#f0b477" font-family="Arial" font-size="16" letter-spacing="3">PRESETS</text>
+      <rect x="18" y="58" width="104" height="28" rx="5" fill="#18233a"/>
+      <text x="30" y="77" fill="#fff7e9" font-family="Arial" font-size="13">Warm Pad</text>
+      <text x="30" y="118" fill="#cbc5ba" font-family="Arial" font-size="13">Bright Bell</text>
+      <text x="30" y="158" fill="#cbc5ba" font-family="Arial" font-size="13">Dark Bass</text>
+      <text x="30" y="198" fill="#cbc5ba" font-family="Arial" font-size="13">Glass</text>
+    </g>
+    <g transform="translate(87 432)">
+      <rect x="0" y="0" width="790" height="82" rx="12" fill="#08090b"/>
+      <g fill="#f3eee4">
+        <rect x="18" y="5" width="24" height="70"/><rect x="46" y="5" width="24" height="70"/><rect x="74" y="5" width="24" height="70"/><rect x="102" y="5" width="24" height="70"/><rect x="130" y="5" width="24" height="70"/><rect x="158" y="5" width="24" height="70"/><rect x="186" y="5" width="24" height="70"/><rect x="214" y="5" width="24" height="70"/><rect x="242" y="5" width="24" height="70"/><rect x="270" y="5" width="24" height="70"/><rect x="298" y="5" width="24" height="70"/><rect x="326" y="5" width="24" height="70"/><rect x="354" y="5" width="24" height="70"/><rect x="382" y="5" width="24" height="70"/><rect x="410" y="5" width="24" height="70"/><rect x="438" y="5" width="24" height="70"/><rect x="466" y="5" width="24" height="70"/><rect x="494" y="5" width="24" height="70"/><rect x="522" y="5" width="24" height="70"/><rect x="550" y="5" width="24" height="70"/><rect x="578" y="5" width="24" height="70"/><rect x="606" y="5" width="24" height="70"/><rect x="634" y="5" width="24" height="70"/><rect x="662" y="5" width="24" height="70"/><rect x="690" y="5" width="24" height="70"/><rect x="718" y="5" width="24" height="70"/></g>
+      <g fill="#050507">
+        <rect x="38" y="5" width="16" height="44"/><rect x="90" y="5" width="16" height="44"/><rect x="118" y="5" width="16" height="44"/><rect x="174" y="5" width="16" height="44"/><rect x="202" y="5" width="16" height="44"/><rect x="258" y="5" width="16" height="44"/><rect x="286" y="5" width="16" height="44"/><rect x="342" y="5" width="16" height="44"/><rect x="370" y="5" width="16" height="44"/><rect x="426" y="5" width="16" height="44"/><rect x="454" y="5" width="16" height="44"/><rect x="510" y="5" width="16" height="44"/><rect x="538" y="5" width="16" height="44"/><rect x="594" y="5" width="16" height="44"/><rect x="622" y="5" width="16" height="44"/><rect x="678" y="5" width="16" height="44"/><rect x="706" y="5" width="16" height="44"/></g>
+    </g>
+    <path d="M88 527h800" stroke="#f0b477" stroke-width="3" opacity=".8"/>
+  </g>
+  <g transform="translate(92 600)" fill="none" stroke="#f0b477" stroke-width="2" opacity=".85">
+    <rect width="1256" height="110" rx="14"/>
+    <path d="M314 0v110M628 0v110M942 0v110"/>
+    <g fill="#f0b477" stroke="none" font-family="Arial" font-size="18" letter-spacing="4">
+      <text x="32" y="42">DRAW HARMONICS</text>
+      <text x="346" y="42">ENVELOPE CONTROL</text>
+      <text x="660" y="42">PLAY AND LISTEN</text>
+      <text x="974" y="42">SAVE AND EXPLORE</text>
+    </g>
+    <g fill="#cbc5ba" stroke="none" font-family="Arial" font-size="16">
+      <text x="32" y="72">Shape the spectrum.</text>
+      <text x="346" y="72">Tune dynamics.</text>
+      <text x="660" y="72">Hear the full range.</text>
+      <text x="974" y="72">Reuse your sounds.</text>
+    </g>
+  </g>
+</svg>
