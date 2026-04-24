@@ -1,29 +1,33 @@
 {
-  "name": "personal_website",
+  "name": "personal-website",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@chakra-ui/icon": "^2.0.0",
-    "@chakra-ui/icons": "^1.1.1",
-    "@chakra-ui/react": "^1.7.4",
-    "@emotion/react": "^11",
-    "@emotion/styled": "^11",
-    "framer-motion": "^5",
-    "next": "12.0.8",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-icons": "^4.3.1"
+    "@radix-ui/react-slot": "^1.2.0",
+    "class-variance-authority": "0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "1.11.0",
+    "next": "16.2.4",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "tailwind-merge": "3.5.0"
+  },
+  "overrides": {
+    "postcss": "8.5.10"
   },
   "devDependencies": {
-    "@types/node": "^17.0.10",
-    "@types/react": "^17.0.38",
-    "eslint": "8.7.0",
-    "eslint-config-next": "12.0.8",
-    "typescript": "^4.5.5"
+    "@tailwindcss/postcss": "4.2.4",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "16.2.4",
+    "tailwindcss": "4.2.4",
+    "typescript": "6.0.3"
   }
 }

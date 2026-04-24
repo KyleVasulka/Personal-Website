@@ -1,28 +1,36 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Personal Website
+
+A modern Next.js App Router starter for a personal portfolio site, using Tailwind CSS and shadcn-style components.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and run the development server:
 
 ```bash
-yarn
-yarn dev
+npm install
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Scripts
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- `npm run dev` starts the local development server.
+- `npm run build` creates a production build.
+- `npm run start` starts the production server.
+- `npm run lint` runs ESLint.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Project Structure
 
-## Learn More
+- `app/layout.tsx` contains root metadata and the app shell.
+- `app/page.tsx` contains the homepage content.
+- `app/globals.css` contains Tailwind theme tokens and base styling.
+- `components/ui` contains shadcn-style UI primitives.
+- `lib/utils.ts` contains the `cn` class name helper.
 
-To learn more about Next.js, take a look at the following resources:
+## Customization
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Update the name, links, projects, and experience in `app/page.tsx`.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
