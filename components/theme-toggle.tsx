@@ -1,16 +1,14 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 
 const storageKey = "theme";
+const themeChangeEvent = "themechange";
+type Theme = "dark" | "light";
 
-function getInitialTheme() {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-
+function getPreferredTheme(): Theme {
   const stored = window.localStorage.getItem(storageKey);
 
   if (stored === "light" || stored === "dark") {
@@ -22,8 +20,26 @@ function getInitialTheme() {
     : "light";
 }
 
+function getServerTheme(): Theme {
+  return "dark";
+}
+
+function subscribeToThemeChanges(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(themeChangeEvent, callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(themeChangeEvent, callback);
+  };
+}
+
 export function ThemeToggle() {
-  const [theme, setTheme] = useState(getInitialTheme);
+  const theme = useSyncExternalStore(
+    subscribeToThemeChanges,
+    getPreferredTheme,
+    getServerTheme,
+  );
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -32,9 +48,9 @@ export function ThemeToggle() {
 
   function toggleTheme() {
     const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
     document.documentElement.classList.toggle("dark", nextTheme === "dark");
     window.localStorage.setItem(storageKey, nextTheme);
+    window.dispatchEvent(new Event(themeChangeEvent));
   }
 
   return (

@@ -236,7 +236,7 @@ h4 {
 
 .hero-visual {
   position: relative;
-  contain: layout paint;
+  contain: layout;
   display: grid;
   min-height: 100%;
   align-items: end;
