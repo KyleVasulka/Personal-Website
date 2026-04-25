@@ -1,6 +1,6 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { ArrowUpRight, Mail } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
 import Image from "next/image";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
@@ -343,6 +343,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <a className="scroll-cue" href="#work" aria-label="Scroll to project history">
+          <ArrowDown aria-hidden="true" />
+        </a>
       </section>
 
       <section

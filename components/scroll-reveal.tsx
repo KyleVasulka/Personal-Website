@@ -4,12 +4,14 @@ import { useEffect } from "react";
 
 export function ScrollReveal() {
   useEffect(() => {
+    document.documentElement.classList.add("reveal-ready");
+
     const elements = Array.from(
       document.querySelectorAll<HTMLElement>("[data-reveal]"),
     );
 
     if (!elements.length) {
-      return;
+      return () => document.documentElement.classList.remove("reveal-ready");
     }
 
     const reduceMotion = window.matchMedia(
@@ -18,24 +20,42 @@ export function ScrollReveal() {
 
     if (reduceMotion) {
       elements.forEach((element) => element.classList.add("is-visible"));
-      return;
+      return () => document.documentElement.classList.remove("reveal-ready");
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          entry.target.classList.toggle("is-visible", entry.isIntersecting);
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
         });
       },
       {
-        rootMargin: "-8% 0px -18%",
-        threshold: 0.18,
+        rootMargin: "0px 0px -12%",
+        threshold: 0.05,
       },
     );
 
-    elements.forEach((element) => observer.observe(element));
+    elements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
 
-    return () => observer.disconnect();
+      if (isInViewport) {
+        element.classList.add("is-visible");
+        return;
+      }
+
+      observer.observe(element);
+    });
+
+    return () => {
+      observer.disconnect();
+      document.documentElement.classList.remove("reveal-ready");
+    };
   }, []);
 
   return null;

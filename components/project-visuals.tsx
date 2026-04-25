@@ -42,19 +42,30 @@ export function HarmonicPianoShowcase() {
 
 export function ProjectModelScene() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
+    const canvasWrapElement = canvasWrapRef.current;
 
-    if (!canvasElement) {
+    if (!canvasElement || !canvasWrapElement) {
       return;
     }
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      canvas: canvasElement,
-    });
+    const wrapElement = canvasWrapElement;
+
+    let renderer: THREE.WebGLRenderer;
+
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        canvas: canvasElement,
+      });
+    } catch {
+      return;
+    }
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     const group = new THREE.Group();
@@ -137,6 +148,7 @@ export function ProjectModelScene() {
     let animationId = 0;
     let width = 0;
     let height = 0;
+    let hasVisibleFrame = false;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -158,6 +170,40 @@ export function ProjectModelScene() {
       camera.updateProjectionMatrix();
     }
 
+    function markCanvasReadyWhenPainted() {
+      if (hasVisibleFrame || width < 1 || height < 1) {
+        return;
+      }
+
+      const gl = renderer.getContext();
+      const samplePoints = [0.24, 0.36, 0.48, 0.6, 0.72].flatMap((xRatio) =>
+        [0.32, 0.44, 0.56, 0.68].map((yRatio) => [xRatio, yRatio]),
+      );
+      const pixel = new Uint8Array(4);
+
+      try {
+        hasVisibleFrame = samplePoints.some(([xRatio, yRatio]) => {
+          gl.readPixels(
+            Math.floor(width * xRatio),
+            Math.floor(height * yRatio),
+            1,
+            1,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            pixel,
+          );
+
+          return pixel[3] > 0;
+        });
+      } catch {
+        hasVisibleFrame = true;
+      }
+
+      if (hasVisibleFrame) {
+        wrapElement.classList.add("is-rendering");
+      }
+    }
+
     function animate() {
       resize();
       frame += reduceMotion ? 0 : 0.01;
@@ -166,6 +212,7 @@ export function ProjectModelScene() {
       torus.rotation.x += reduceMotion ? 0 : 0.006;
       cube.rotation.y -= reduceMotion ? 0 : 0.008;
       renderer.render(scene, camera);
+      markCanvasReadyWhenPainted();
       animationId = window.requestAnimationFrame(animate);
     }
 
@@ -175,6 +222,7 @@ export function ProjectModelScene() {
     return () => {
       window.cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
+      wrapElement.classList.remove("is-rendering");
       renderer.dispose();
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh) {
@@ -200,7 +248,20 @@ export function ProjectModelScene() {
           and custom motor-driver hardware.
         </p>
       </div>
-      <div className="model-canvas-wrap" aria-label="Rotating 3D project forms">
+      <div
+        className="model-canvas-wrap"
+        ref={canvasWrapRef}
+        aria-label="Rotating 3D project forms"
+      >
+        <div className="model-fallback" aria-hidden="true">
+          <span className="model-fallback-orbit" />
+          <span className="model-fallback-knot" />
+          <span className="model-fallback-cube" />
+          <span className="model-fallback-puck model-fallback-puck-a" />
+          <span className="model-fallback-puck model-fallback-puck-b" />
+          <span className="model-fallback-puck model-fallback-puck-c" />
+          <span className="model-fallback-puck model-fallback-puck-d" />
+        </div>
         <canvas ref={canvasRef} />
       </div>
     </section>
