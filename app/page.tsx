@@ -2,15 +2,15 @@ import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { HistoryParticleField } from "@/components/history-particle-field";
 import { KineticBackground } from "@/components/kinetic-background";
 import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
+import { ProjectExplorer } from "@/components/project-explorer";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { historySections, slugifyProjectName } from "@/lib/projects";
+import { historySections } from "@/lib/projects";
 
 export const dynamic = "force-dynamic";
 
@@ -132,63 +132,7 @@ export default function Home() {
         </div>
         <HarmonicPianoShowcase />
         <ProjectModelScene />
-        <div className="history-list">
-          {historySections.map((section, sectionIndex) => (
-            <section
-              className="history-band"
-              data-reveal
-              key={section.period}
-              style={{ "--reveal-delay": `${sectionIndex * 80}ms` } as React.CSSProperties}
-            >
-              <div className="history-band-header">
-                <p className="eyebrow">{section.period}</p>
-                <h3>{section.title}</h3>
-              </div>
-              <div className="history-grid">
-                {section.items.map((item, itemIndex) => (
-                  <article
-                    className="history-card"
-                    data-reveal
-                    key={item.name}
-                    style={
-                      {
-                        "--reveal-delay": `${Math.min(itemIndex, 6) * 45}ms`,
-                      } as React.CSSProperties
-                    }
-                  >
-                    <div>
-                      <h4>
-                        <Link
-                          className="history-card-detail-link"
-                          href={`/projects/${slugifyProjectName(item.name)}`}
-                        >
-                          {item.name}
-                        </Link>
-                      </h4>
-                      <p>{item.description}</p>
-                    </div>
-                    {(item.href || item.secondaryHref) && (
-                      <div className="history-links">
-                        {item.href && (
-                          <a href={item.href}>
-                            View
-                            <ArrowUpRight aria-hidden="true" />
-                          </a>
-                        )}
-                        {item.secondaryHref && (
-                          <a href={item.secondaryHref}>
-                            {item.secondaryLabel}
-                            <ArrowUpRight aria-hidden="true" />
-                          </a>
-                        )}
-                      </div>
-                    )}
-                  </article>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+        <ProjectExplorer sections={historySections} />
       </section>
 
       <section

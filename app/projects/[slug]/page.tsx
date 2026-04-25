@@ -101,6 +101,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <p className="eyebrow">{project.sectionPeriod}</p>
           <h1>{project.name}</h1>
           <p>{project.description}</p>
+          <div className="project-detail-tags" aria-label="Project tags">
+            <span className="timeline-pill">{project.timeline}</span>
+            <span className="demo-pill" data-has-demo={project.hasDemo}>
+              {project.hasDemo ? "Demo" : "No demo listed"}
+            </span>
+            {project.useCases.map((tag) => (
+              <span className="project-tag" data-tag-kind="use-case" key={tag}>
+                {tag}
+              </span>
+            ))}
+            {project.techStack.map((tag) => (
+              <span className="project-tag" data-tag-kind="tech" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
         </header>
 
         <section className="project-writeup" aria-label={`${project.name} writeup`}>
