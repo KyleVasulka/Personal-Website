@@ -2,8 +2,9 @@
   <rect width="1600" height="1000" fill="#f7f7f2"/>
   <path d="M0 760C240 660 410 690 610 550C810 410 940 250 1160 250C1340 250 1480 340 1600 460V1000H0Z" fill="#dce7d6"/>
   <path d="M980 0H1600V660C1440 510 1320 430 1160 430C930 430 790 620 560 720C360 808 170 790 0 880V0Z" fill="#e7eef9"/>
-  <path d="M175 265H603V693H175Z" fill="none" stroke="#1d1d1f" stroke-opacity=".13" stroke-width="2"/>
-  <path d="M390 120L720 740H60Z" fill="none" stroke="#1d1d1f" stroke-opacity=".12" stroke-width="2"/>
+  <path d="M145 325C255 210 430 190 555 288C675 382 708 552 622 676" fill="none" stroke="#1d1d1f" stroke-opacity=".12" stroke-width="2"/>
+  <path d="M118 610H512" fill="none" stroke="#1d1d1f" stroke-opacity=".11" stroke-width="2"/>
+  <path d="M210 720C322 642 468 650 590 742" fill="none" stroke="#1d1d1f" stroke-opacity=".1" stroke-width="2"/>
   <circle cx="1180" cy="310" r="210" fill="none" stroke="#2563eb" stroke-opacity=".18" stroke-width="3"/>
   <circle cx="1180" cy="310" r="92" fill="#ffffff" fill-opacity=".48"/>
   <path d="M1000 780H1450" stroke="#1d1d1f" stroke-opacity=".14" stroke-width="3"/>
