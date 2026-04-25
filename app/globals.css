@@ -98,10 +98,11 @@ a {
 
 .hero {
   position: relative;
+  overflow: hidden;
   min-height: 92vh;
   padding: 1.5rem clamp(1.25rem, 4vw, 4rem) 4.5rem;
   background:
-    linear-gradient(135deg, rgb(255 255 255 / 86%), rgb(247 247 242 / 78%)),
+    linear-gradient(135deg, rgb(255 255 255 / 84%), rgb(247 247 242 / 72%)),
     url("/hero-pattern.svg");
   background-size: cover;
   border-bottom: 1px solid var(--color-border);
@@ -109,9 +110,207 @@ a {
 
 .dark .hero {
   background:
-    linear-gradient(135deg, rgb(16 17 20 / 92%), rgb(16 17 20 / 82%)),
+    linear-gradient(135deg, rgb(16 17 20 / 91%), rgb(16 17 20 / 76%)),
     url("/hero-pattern.svg");
   background-size: cover;
+}
+
+.hero::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 68%, color-mix(in srgb, var(--color-sage) 13%, transparent), transparent 28%),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-background) 72%, transparent), transparent 58%);
+  content: "";
+}
+
+.kinetic-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.88;
+}
+
+.kinetic-background canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.kinetic-background::before {
+  position: absolute;
+  inset: -14% -12%;
+  background:
+    radial-gradient(circle at 74% 24%, rgb(90 215 255 / 24%), transparent 22%),
+    radial-gradient(circle at 38% 82%, rgb(240 180 119 / 14%), transparent 24%),
+    conic-gradient(from 210deg at 70% 36%, transparent, rgb(109 220 199 / 12%), transparent 28%);
+  filter: blur(18px);
+  animation: background-drift 22s ease-in-out infinite;
+  content: "";
+}
+
+.ambient-network {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ambient-node,
+.ambient-link {
+  position: absolute;
+  display: block;
+  opacity: 0.56;
+  transform: translateZ(0);
+}
+
+.ambient-node {
+  left: var(--network-left, 50%);
+  top: var(--network-top, 50%);
+  width: var(--network-size, 0.36rem);
+  aspect-ratio: 1;
+  background: rgb(205 255 233 / 78%);
+  border-radius: 999px;
+  box-shadow: 0 0 1rem rgb(128 218 194 / 46%);
+  animation: ambient-node-drift var(--network-duration, 14s) ease-in-out infinite;
+  animation-delay: calc(var(--network-index) * -730ms);
+}
+
+.ambient-link {
+  left: var(--network-left, 50%);
+  top: var(--network-top, 50%);
+  width: var(--network-length, 8rem);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(128 218 194 / 28%), transparent);
+  transform-origin: left center;
+  transform: rotate(var(--network-rotate, 0deg));
+  animation: ambient-link-pulse var(--network-duration, 15s) ease-in-out infinite;
+  animation-delay: calc(var(--network-index) * -610ms);
+}
+
+.ambient-node:nth-of-type(16) { --network-left: 11%; --network-top: 17%; --network-size: 0.28rem; --network-duration: 13s; }
+.ambient-node:nth-of-type(17) { --network-left: 28%; --network-top: 24%; --network-size: 0.36rem; --network-duration: 17s; }
+.ambient-node:nth-of-type(18) { --network-left: 64%; --network-top: 18%; --network-size: 0.42rem; --network-duration: 15s; }
+.ambient-node:nth-of-type(19) { --network-left: 85%; --network-top: 27%; --network-size: 0.32rem; --network-duration: 16s; }
+.ambient-node:nth-of-type(20) { --network-left: 18%; --network-top: 43%; --network-size: 0.46rem; --network-duration: 18s; }
+.ambient-node:nth-of-type(21) { --network-left: 43%; --network-top: 39%; --network-size: 0.3rem; --network-duration: 14s; }
+.ambient-node:nth-of-type(22) { --network-left: 73%; --network-top: 46%; --network-size: 0.52rem; --network-duration: 17s; }
+.ambient-node:nth-of-type(23) { --network-left: 94%; --network-top: 52%; --network-size: 0.38rem; --network-duration: 15s; }
+.ambient-node:nth-of-type(24) { --network-left: 8%; --network-top: 70%; --network-size: 0.34rem; --network-duration: 19s; }
+.ambient-node:nth-of-type(25) { --network-left: 32%; --network-top: 68%; --network-size: 0.48rem; --network-duration: 16s; }
+.ambient-node:nth-of-type(26) { --network-left: 57%; --network-top: 66%; --network-size: 0.32rem; --network-duration: 18s; }
+.ambient-node:nth-of-type(27) { --network-left: 79%; --network-top: 74%; --network-size: 0.4rem; --network-duration: 14s; }
+.ambient-node:nth-of-type(28) { --network-left: 16%; --network-top: 87%; --network-size: 0.3rem; --network-duration: 15s; }
+.ambient-node:nth-of-type(29) { --network-left: 48%; --network-top: 85%; --network-size: 0.44rem; --network-duration: 17s; }
+.ambient-node:nth-of-type(30) { --network-left: 67%; --network-top: 91%; --network-size: 0.3rem; --network-duration: 16s; }
+.ambient-node:nth-of-type(31) { --network-left: 90%; --network-top: 88%; --network-size: 0.34rem; --network-duration: 18s; }
+.ambient-node:nth-of-type(32) { --network-left: 36%; --network-top: 53%; --network-size: 0.28rem; --network-duration: 13s; }
+.ambient-node:nth-of-type(33) { --network-left: 58%; --network-top: 31%; --network-size: 0.34rem; --network-duration: 19s; }
+
+.ambient-link:nth-of-type(1) { --network-left: 11%; --network-top: 17%; --network-length: 14rem; --network-rotate: 24deg; --network-duration: 13s; }
+.ambient-link:nth-of-type(2) { --network-left: 28%; --network-top: 24%; --network-length: 12rem; --network-rotate: -11deg; --network-duration: 16s; }
+.ambient-link:nth-of-type(3) { --network-left: 64%; --network-top: 18%; --network-length: 10rem; --network-rotate: 28deg; --network-duration: 15s; }
+.ambient-link:nth-of-type(4) { --network-left: 18%; --network-top: 43%; --network-length: 11rem; --network-rotate: -15deg; --network-duration: 17s; }
+.ambient-link:nth-of-type(5) { --network-left: 43%; --network-top: 39%; --network-length: 14rem; --network-rotate: 18deg; --network-duration: 14s; }
+.ambient-link:nth-of-type(6) { --network-left: 73%; --network-top: 46%; --network-length: 9rem; --network-rotate: 24deg; --network-duration: 18s; }
+.ambient-link:nth-of-type(7) { --network-left: 8%; --network-top: 70%; --network-length: 13rem; --network-rotate: -7deg; --network-duration: 19s; }
+.ambient-link:nth-of-type(8) { --network-left: 32%; --network-top: 68%; --network-length: 12rem; --network-rotate: -3deg; --network-duration: 16s; }
+.ambient-link:nth-of-type(9) { --network-left: 57%; --network-top: 66%; --network-length: 12rem; --network-rotate: 22deg; --network-duration: 18s; }
+.ambient-link:nth-of-type(10) { --network-left: 16%; --network-top: 87%; --network-length: 16rem; --network-rotate: -9deg; --network-duration: 15s; }
+.ambient-link:nth-of-type(11) { --network-left: 48%; --network-top: 85%; --network-length: 9rem; --network-rotate: 15deg; --network-duration: 17s; }
+.ambient-link:nth-of-type(12) { --network-left: 58%; --network-top: 31%; --network-length: 10rem; --network-rotate: -27deg; --network-duration: 18s; }
+.ambient-link:nth-of-type(13) { --network-left: 36%; --network-top: 53%; --network-length: 13rem; --network-rotate: -34deg; --network-duration: 14s; }
+.ambient-link:nth-of-type(14) { --network-left: 85%; --network-top: 27%; --network-length: 8rem; --network-rotate: 61deg; --network-duration: 16s; }
+.ambient-link:nth-of-type(15) { --network-left: 79%; --network-top: 74%; --network-length: 11rem; --network-rotate: -42deg; --network-duration: 18s; }
+
+.shooting-stars {
+  position: absolute;
+  inset: -8% -12%;
+  z-index: 4;
+  opacity: 0.62;
+}
+
+.shooting-star {
+  position: absolute;
+  left: var(--star-left, 50%);
+  top: var(--star-top, 50%);
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transform: translate3d(var(--star-from-x, -18vw), var(--star-from-y, 0), 0);
+  animation: shooting-star-travel var(--star-duration, 9s) linear infinite;
+  animation-delay: calc(var(--star-index) * -720ms);
+}
+
+.shooting-star::before,
+.shooting-star::after {
+  position: absolute;
+  content: "";
+}
+
+.shooting-star::before {
+  right: 0;
+  top: 0;
+  width: clamp(4.5rem, 10vw, 8.5rem);
+  height: 2px;
+  background:
+    linear-gradient(90deg, rgb(205 255 233 / 0%), rgb(205 255 233 / 34%) 24%, rgb(255 244 210 / 86%) 100%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0.8rem rgb(205 255 233 / 28%),
+    0 0 1.9rem rgb(90 215 255 / 16%);
+  transform: translateY(-50%) rotate(var(--star-rotate, -22deg));
+  transform-origin: right center;
+}
+
+.shooting-star::after {
+  left: -0.2rem;
+  top: -0.2rem;
+  width: 0.42rem;
+  aspect-ratio: 1;
+  background: rgb(255 250 223 / 92%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0.8rem rgb(255 250 223 / 84%),
+    0 0 1.7rem rgb(128 218 194 / 54%);
+}
+
+.shooting-star:nth-child(1) { --star-left: 8%; --star-top: 20%; --star-rotate: -24deg; --star-from-x: -24vw; --star-from-y: 11vw; --star-to-x: 24vw; --star-to-y: -11vw; --star-duration: 11s; }
+.shooting-star:nth-child(2) { --star-left: 76%; --star-top: 12%; --star-rotate: 16deg; --star-from-x: -21vw; --star-from-y: -6vw; --star-to-x: 21vw; --star-to-y: 6vw; --star-duration: 13s; }
+.shooting-star:nth-child(3) { --star-left: 44%; --star-top: 30%; --star-rotate: -31deg; --star-from-x: -26vw; --star-from-y: 16vw; --star-to-x: 26vw; --star-to-y: -16vw; --star-duration: 10s; }
+.shooting-star:nth-child(4) { --star-left: 89%; --star-top: 34%; --star-rotate: -154deg; --star-from-x: 22vw; --star-from-y: 11vw; --star-to-x: -22vw; --star-to-y: -11vw; --star-duration: 12s; }
+.shooting-star:nth-child(5) { --star-left: 20%; --star-top: 48%; --star-rotate: 28deg; --star-from-x: -25vw; --star-from-y: -13vw; --star-to-x: 25vw; --star-to-y: 13vw; --star-duration: 14s; }
+.shooting-star:nth-child(6) { --star-left: 62%; --star-top: 50%; --star-rotate: -18deg; --star-from-x: -22vw; --star-from-y: 7vw; --star-to-x: 22vw; --star-to-y: -7vw; --star-duration: 9s; }
+.shooting-star:nth-child(7) { --star-left: 36%; --star-top: 64%; --star-rotate: -42deg; --star-from-x: -20vw; --star-from-y: 18vw; --star-to-x: 20vw; --star-to-y: -18vw; --star-duration: 12.5s; }
+.shooting-star:nth-child(8) { --star-left: 84%; --star-top: 70%; --star-rotate: 21deg; --star-from-x: -22vw; --star-from-y: -8vw; --star-to-x: 22vw; --star-to-y: 8vw; --star-duration: 15s; }
+.shooting-star:nth-child(9) { --star-left: 13%; --star-top: 82%; --star-rotate: -12deg; --star-from-x: -21vw; --star-from-y: 5vw; --star-to-x: 21vw; --star-to-y: -5vw; --star-duration: 11.5s; }
+.shooting-star:nth-child(10) { --star-left: 56%; --star-top: 84%; --star-rotate: -146deg; --star-from-x: 20vw; --star-from-y: 13vw; --star-to-x: -20vw; --star-to-y: -13vw; --star-duration: 13.5s; }
+.shooting-star:nth-child(11) { --star-left: 30%; --star-top: 14%; --star-rotate: 38deg; --star-from-x: -17vw; --star-from-y: -13vw; --star-to-x: 17vw; --star-to-y: 13vw; --star-duration: 16s; }
+.shooting-star:nth-child(12) { --star-left: 70%; --star-top: 28%; --star-rotate: -9deg; --star-from-x: -26vw; --star-from-y: 4vw; --star-to-x: 26vw; --star-to-y: -4vw; --star-duration: 10.8s; }
+.shooting-star:nth-child(13) { --star-left: 5%; --star-top: 58%; --star-rotate: -33deg; --star-from-x: -19vw; --star-from-y: 13vw; --star-to-x: 19vw; --star-to-y: -13vw; --star-duration: 13.8s; }
+.shooting-star:nth-child(14) { --star-left: 96%; --star-top: 54%; --star-rotate: -165deg; --star-from-x: 23vw; --star-from-y: 6vw; --star-to-x: -23vw; --star-to-y: -6vw; --star-duration: 11.8s; }
+.shooting-star:nth-child(15) { --star-left: 47%; --star-top: 8%; --star-rotate: 9deg; --star-from-x: -18vw; --star-from-y: -3vw; --star-to-x: 18vw; --star-to-y: 3vw; --star-duration: 15.4s; }
+.shooting-star:nth-child(16) { --star-left: 23%; --star-top: 72%; --star-rotate: -58deg; --star-from-x: -17vw; --star-from-y: 27vw; --star-to-x: 17vw; --star-to-y: -27vw; --star-duration: 12.8s; }
+.shooting-star:nth-child(17) { --star-left: 78%; --star-top: 88%; --star-rotate: -28deg; --star-from-x: -23vw; --star-from-y: 13vw; --star-to-x: 23vw; --star-to-y: -13vw; --star-duration: 14.5s; }
+.shooting-star:nth-child(18) { --star-left: 54%; --star-top: 42%; --star-rotate: 34deg; --star-from-x: -19vw; --star-from-y: -12vw; --star-to-x: 19vw; --star-to-y: 12vw; --star-duration: 12.2s; }
+
+.kinetic-scanline {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, transparent 0 48%, rgb(255 255 255 / 8%) 49%, transparent 51%),
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(255 255 255 / 3%) 10px);
+  mix-blend-mode: soft-light;
+  opacity: 0.55;
+  animation: scanline-slide 11s linear infinite;
 }
 
 .nav,
@@ -123,6 +322,8 @@ a {
 }
 
 .nav {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -161,6 +362,8 @@ a {
 }
 
 .hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(17.5rem, 0.75fr);
   gap: clamp(2rem, 6vw, 5rem);
@@ -1085,6 +1288,76 @@ h4 {
 
   50% {
     translate: -50% 0.35rem;
+  }
+}
+
+@keyframes background-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-2.5%, 1.6%, 0) rotate(5deg) scale(1.04);
+  }
+}
+
+@keyframes ambient-node-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.42;
+  }
+
+  50% {
+    transform: translate3d(-0.55rem, 0.7rem, 0);
+    opacity: 0.82;
+  }
+}
+
+@keyframes ambient-link-pulse {
+  0%,
+  100% {
+    opacity: 0.18;
+    transform: rotate(var(--network-rotate, 0deg)) scaleX(0.92);
+  }
+
+  50% {
+    opacity: 0.56;
+    transform: rotate(var(--network-rotate, 0deg)) scaleX(1.04);
+  }
+}
+
+@keyframes shooting-star-travel {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translate3d(var(--star-from-x, -18vw), var(--star-from-y, 0), 0);
+  }
+
+  18% {
+    opacity: 0.86;
+  }
+
+  52% {
+    opacity: 0.62;
+    transform: translate3d(0, 0, 0);
+  }
+
+  76%,
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--star-to-x, 18vw), var(--star-to-y, 0), 0);
+  }
+}
+
+@keyframes scanline-slide {
+  from {
+    transform: translateY(-12%);
+  }
+
+  to {
+    transform: translateY(12%);
   }
 }
 

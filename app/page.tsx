@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
+import { KineticBackground } from "@/components/kinetic-background";
 import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ export default function Home() {
     <main className="site-shell">
       <ScrollReveal />
       <section className="hero" aria-labelledby="hero-title">
+        <KineticBackground />
         <nav className="nav" aria-label="Primary navigation">
           <a
             className="brand-mark"
