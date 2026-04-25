@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
+import { HistoryParticleField } from "@/components/history-particle-field";
 import { KineticBackground } from "@/components/kinetic-background";
 import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -120,6 +121,7 @@ export default function Home() {
         id="work"
         aria-labelledby="work-title"
       >
+        <HistoryParticleField />
         <div className="section-header" data-reveal>
           <p className="eyebrow">Project history</p>
           <h2 id="work-title">A long trail of shipped experiments.</h2>

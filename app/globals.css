@@ -573,6 +573,13 @@ h4 {
 
 .history {
   position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  margin-inline: 0;
+  overflow: visible;
+  background:
+    radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--color-ring) 10%, transparent), transparent 24%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-background) 96%, transparent), var(--color-background));
 }
 
 .history::before {
@@ -589,6 +596,49 @@ h4 {
     transparent
   );
   content: "";
+}
+
+.history::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, var(--color-background), transparent 16%, transparent 82%, var(--color-background)),
+    radial-gradient(circle at 16% 22%, color-mix(in srgb, var(--color-background) 62%, transparent), transparent 28%);
+  transform: translateX(-50%);
+  content: "";
+}
+
+.history-particle-field {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  height: 100svh;
+  opacity: 0.72;
+  pointer-events: none;
+  transform: translate3d(-50%, 0, 0);
+  will-change: transform;
+}
+
+.history > :not(.history-particle-field) {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 72rem);
+  margin-inline: auto;
+}
+
+.history > .section-header {
+  max-width: 72rem;
+}
+
+.history > .section-header > * {
+  max-width: 48rem;
 }
 
 .history-list {
