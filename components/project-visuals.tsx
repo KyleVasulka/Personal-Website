@@ -3,20 +3,34 @@
 import { useEffect, useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import * as THREE from "three";
 
 export function HarmonicPianoShowcase() {
   return (
     <section className="feature-showcase" data-reveal>
+      <Link
+        className="feature-card-link"
+        href="/projects/harmonic-piano"
+        aria-label="Read the Harmonic Piano writeup"
+      />
       <div className="feature-copy">
         <p className="eyebrow">Featured experiment</p>
-        <h3>Harmonic Piano</h3>
+        <h3>
+          <Link className="feature-title-link" href="/projects/harmonic-piano">
+            Harmonic Piano
+          </Link>
+        </h3>
         <p>
           A synthesizer interface for sculpting the harmonic content of each
           note in real time. Draw the spectrum, hear the timbre shift, and save
           tones as playable presets.
         </p>
         <div className="history-links">
+          <Link href="/projects/harmonic-piano">
+            Read writeup
+            <ArrowUpRight aria-hidden="true" />
+          </Link>
           <a href="https://youtu.be/gYpqAZQKDLQ">
             Watch demo
             <ArrowUpRight aria-hidden="true" />
@@ -27,7 +41,11 @@ export function HarmonicPianoShowcase() {
           </a>
         </div>
       </div>
-      <div className="piano-mockup-frame">
+      <Link
+        className="piano-mockup-frame"
+        href="/projects/harmonic-piano"
+        aria-label="Read the Harmonic Piano writeup"
+      >
         <Image
           alt="Harmonic Piano synthesizer mockup"
           height={820}
@@ -35,7 +53,7 @@ export function HarmonicPianoShowcase() {
           src="/harmonic-piano-mockup.svg"
           width={1440}
         />
-      </div>
+      </Link>
     </section>
   );
 }
