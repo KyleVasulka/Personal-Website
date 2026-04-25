@@ -46,6 +46,7 @@ export function HistoryParticleField() {
     let width = 0;
     let height = 0;
     let pixelRatio = 1;
+    let parallaxOffset = 0;
     let particles: Particle[] = [];
     const pointer = {
       active: false,
@@ -58,7 +59,20 @@ export function HistoryParticleField() {
       const sectionTop = sectionBounds.top + window.scrollY;
       const maxOffset = Math.max(0, sectionBounds.height - height);
       const offset = Math.min(Math.max(window.scrollY - sectionTop, 0), maxOffset);
+      parallaxOffset = -offset * 0.28;
       canvasElement.style.transform = `translate3d(-50%, ${offset}px, 0)`;
+
+      if (reducedMotion) {
+        draw(1200);
+      }
+    }
+
+    function wrapY(value: number) {
+      if (height <= 0) {
+        return value;
+      }
+
+      return ((value % height) + height) % height;
     }
 
     function resize() {
@@ -120,7 +134,8 @@ export function HistoryParticleField() {
 
         if (pointer.active) {
           const dx = particle.x - pointer.x;
-          const dy = particle.y - pointer.y;
+          const displayY = wrapY(particle.y + parallaxOffset);
+          const dy = displayY - pointer.y;
           const distance = Math.hypot(dx, dy);
 
           if (distance < pointerRadius && distance > 0.01) {
@@ -142,10 +157,10 @@ export function HistoryParticleField() {
 
       const backdrop = drawingContext.createRadialGradient(
         width * 0.54,
-        height * 0.18,
+        wrapY(height * 0.18 + parallaxOffset * 0.35),
         0,
         width * 0.54,
-        height * 0.22,
+        wrapY(height * 0.22 + parallaxOffset * 0.35),
         Math.max(width, height) * 0.72,
       );
       backdrop.addColorStop(0, "rgba(90, 215, 255, 0.07)");
@@ -165,15 +180,17 @@ export function HistoryParticleField() {
         for (let j = i + 1; j < particles.length; j += 1) {
           const first = particles[i];
           const second = particles[j];
-          const distance = Math.hypot(first.x - second.x, first.y - second.y);
+          const firstY = wrapY(first.y + parallaxOffset);
+          const secondY = wrapY(second.y + parallaxOffset);
+          const distance = Math.hypot(first.x - second.x, firstY - secondY);
 
           if (distance < linkDistance) {
             const opacity = (1 - distance / linkDistance) * 0.105;
             drawingContext.strokeStyle = `rgba(128, 218, 194, ${opacity})`;
             drawingContext.lineWidth = 1;
             drawingContext.beginPath();
-            drawingContext.moveTo(first.x, first.y);
-            drawingContext.lineTo(second.x, second.y);
+            drawingContext.moveTo(first.x, firstY);
+            drawingContext.lineTo(second.x, secondY);
             drawingContext.stroke();
           }
         }
@@ -181,9 +198,10 @@ export function HistoryParticleField() {
 
       for (const particle of particles) {
         const pulse = Math.sin(time * 0.0012 + particle.phase) * 0.32;
+        const displayY = wrapY(particle.y + parallaxOffset);
         drawingContext.fillStyle = "rgba(215, 255, 236, 0.56)";
         drawingContext.beginPath();
-        drawingContext.arc(particle.x, particle.y, Math.max(0.7, particle.size + pulse), 0, Math.PI * 2);
+        drawingContext.arc(particle.x, displayY, Math.max(0.7, particle.size + pulse), 0, Math.PI * 2);
         drawingContext.fill();
       }
 
