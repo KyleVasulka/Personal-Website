@@ -141,6 +141,15 @@ export const historySections = [
         timeline: "AI media and games era",
       },
       {
+        name: "Web Manga Viewer",
+        description:
+          "A browser-based manga reader demo that loads local story folders and supports chapter selection, reading direction, and page navigation.",
+        href: "/manga",
+        techStack: ["Next.js", "Manga reader", "Interactive UI"],
+        useCases: ["Demo", "Creative tool"],
+        timeline: "AI media and games era",
+      },
+      {
         name: "AIPlaysMoonLander",
         description:
           "A reinforcement learning PPO algorithm trained on a MacBook to play MoonLander.",
