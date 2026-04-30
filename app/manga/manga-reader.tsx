@@ -54,8 +54,6 @@ type ReaderTouchEvent = {
 };
 
 type MangaReaderProps = {
-  initialPageIndex: number;
-  initialStoryName?: string;
   library: MangaStory[];
 };
 
@@ -153,11 +151,7 @@ function getReaderWidth() {
   );
 }
 
-export function MangaReader({
-  initialPageIndex,
-  initialStoryName,
-  library,
-}: MangaReaderProps) {
+export function MangaReader({ library }: MangaReaderProps) {
   const surfaceRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<DragState | null>(null);
@@ -165,13 +159,11 @@ export function MangaReader({
   const touchPanRef = useRef<TouchPanState | null>(null);
   const pageRefs = useRef<Array<HTMLImageElement | null>>([]);
   const restoredPageRef = useRef(false);
-  const lastSavedPageRef = useRef(initialPageIndex);
+  const lastSavedPageRef = useRef(0);
   const scrollFrameRef = useRef<number | null>(null);
   const urlUpdateTimeoutRef = useRef<number | null>(null);
   const transformRef = useRef<Transform>({ scale: 1, x: 0, y: 0 });
-  const [selectedStory, setSelectedStory] = useState<MangaStory | null>(
-    () => library.find((story) => story.name === initialStoryName) ?? null,
-  );
+  const [selectedStory, setSelectedStory] = useState<MangaStory | null>(null);
   const [transform, setTransform] = useState<Transform>({ scale: 1, x: 0, y: 0 });
   const firstChapter = selectedStory?.chapters[0];
   const pages = firstChapter?.pages ?? [];
@@ -590,13 +582,35 @@ export function MangaReader({
   }, []);
 
   useEffect(() => {
-    if (selectedStory || initialStoryName) {
+    if (selectedStory) {
       return;
     }
 
     let restoreTimeout: number | null = null;
 
     try {
+      const params = new URLSearchParams(window.location.search);
+      const requestedStory = library.find(
+        (story) => story.name === params.get("story"),
+      );
+
+      if (requestedStory) {
+        lastSavedPageRef.current = Math.max(
+          Number(params.get("page") ?? 1) - 1,
+          0,
+        );
+        restoredPageRef.current = false;
+        restoreTimeout = window.setTimeout(
+          () => setSelectedStory(requestedStory),
+          0,
+        );
+        return () => {
+          if (restoreTimeout !== null) {
+            window.clearTimeout(restoreTimeout);
+          }
+        };
+      }
+
       const progress = JSON.parse(
         window.sessionStorage.getItem(readerStorageKey) ?? "null",
       ) as { page?: number; story?: string } | null;
@@ -618,7 +632,7 @@ export function MangaReader({
         window.clearTimeout(restoreTimeout);
       }
     };
-  }, [initialStoryName, library, selectedStory]);
+  }, [library, selectedStory]);
 
   useEffect(() => {
     if (selectedStory) {
@@ -692,9 +706,7 @@ export function MangaReader({
     }
 
     const frame = requestAnimationFrame(() => {
-      const pageIndex = initialStoryName
-        ? initialPageIndex
-        : lastSavedPageRef.current;
+      const pageIndex = lastSavedPageRef.current;
 
       pageRefs.current[pageIndex]?.scrollIntoView({
         block: "start",
@@ -705,7 +717,7 @@ export function MangaReader({
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [initialPageIndex, initialStoryName, resetHorizontalScroll, selectedStory]);
+  }, [resetHorizontalScroll, selectedStory]);
 
   if (library.length === 0) {
     return (
@@ -804,11 +816,7 @@ export function MangaReader({
                 key={page.src}
                 loading={index < 2 ? "eager" : "lazy"}
                 onLoad={() => {
-                  const restoreIndex = initialStoryName
-                    ? initialPageIndex
-                    : lastSavedPageRef.current;
-
-                  if (index === restoreIndex && !restoredPageRef.current) {
+                  if (index === lastSavedPageRef.current && !restoredPageRef.current) {
                     pageRefs.current[index]?.scrollIntoView({
                       block: "start",
                       inline: "start",

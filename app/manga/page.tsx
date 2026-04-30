@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = "force-static";
+
 const mangaDirectory = join(process.cwd(), "public", "Manga");
 const imageExtensions = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"]);
 
@@ -90,22 +92,6 @@ function getMangaLibrary(): MangaStory[] {
     .filter((story) => story.chapters.length > 0);
 }
 
-type MangaPageProps = {
-  searchParams?: Promise<{
-    page?: string;
-    story?: string;
-  }>;
-};
-
-export default async function MangaPage({ searchParams }: MangaPageProps) {
-  const params = await searchParams;
-  const initialPageIndex = Math.max(Number(params?.page ?? 1) - 1, 0);
-
-  return (
-    <MangaReader
-      initialPageIndex={initialPageIndex}
-      initialStoryName={params?.story}
-      library={getMangaLibrary()}
-    />
-  );
+export default function MangaPage() {
+  return <MangaReader library={getMangaLibrary()} />;
 }
