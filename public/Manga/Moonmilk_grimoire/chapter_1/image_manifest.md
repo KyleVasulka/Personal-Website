@@ -1,0 +1,25 @@
+# Image Manifest
+Generated with built-in image generation tool. Originals remain in Codex generated-images cache.
+- characters/rowan_vale_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2baa0f850819a8abc5818ec57bf63.png`
+- characters/mara_vale_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2baeda92c819a9d322e716de11b92.png`
+- characters/nessa_vale_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bb2a4e48819a8f731d404dbd321f.png`
+- characters/father_odran_pell_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bb6c7928819abc947db13d8660a4.png`
+- characters/tallow_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bbb47d4c819a853be4b71d0932b7.png`
+- characters/master_iven_sorell_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bbfc26a0819a87f50f0d9139243e.png`
+- worldbuilding/places/vale_cottage_nursery_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bc9fcfa0819a9a06cddbc6245f10.png`
+- worldbuilding/places/brindlewick_village_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bce7eabc819a9d708ffbf2a3c4cd.png`
+- worldbuilding/places/moonmilk_spring_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bd2f204c819aa187eeb50a97f867.png`
+- worldbuilding/places/church_road_shrine_sheet.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bd7d9e8c819ab00ce0c9fc78b49c.png`
+- output/_moonmilk_grimoire/thumbnail.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bdc9c490819a80c3a101a83803a7.png`
+- output/_moonmilk_grimoire/chapter_1/page_01.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bee18a98819aaacbadaae331cc0b.png`
+- output/_moonmilk_grimoire/chapter_1/page_02.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2bf947ed4819a8b8c52c710e9d2c0.png`
+- output/_moonmilk_grimoire/chapter_1/page_03.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c032086c819aa4eee8d6d53fef39.png`
+- output/_moonmilk_grimoire/chapter_1/page_04.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c0ec4c24819ab2960b6c141a383d.png`
+- output/_moonmilk_grimoire/chapter_1/page_05.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c194918c819aa68eeb5e0e7cf4af.png`
+- output/_moonmilk_grimoire/chapter_1/page_06.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c23c5bdc819aa91387d26989ee56.png`
+- output/_moonmilk_grimoire/chapter_1/page_07.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c29135d8819aa69ce9e4bf36658a.png`
+- output/_moonmilk_grimoire/chapter_1/page_08.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c3546c34819ab72272279054a665.png`
+- output/_moonmilk_grimoire/chapter_1/page_09.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c3adb7e8819a9ace0f13e22e4d57.png`
+- output/_moonmilk_grimoire/chapter_1/page_10.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c44c0a10819ab9bad465dac13761.png`
+- output/_moonmilk_grimoire/chapter_1/page_11.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c4f5fd64819ab350f37c3a5bf9f6.png`
+- output/_moonmilk_grimoire/chapter_1/page_12.png copied from `/Users/kylevasulka/.codex/generated_images/019ddc26-1519-7ca0-ad4d-41dd5c360405/ig_03851094381922b10169f2c5b47660819a9dc1485e4b5ab298.png`

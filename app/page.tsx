@@ -5,7 +5,11 @@ import Image from "next/image";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { HistoryParticleField } from "@/components/history-particle-field";
 import { KineticBackground } from "@/components/kinetic-background";
-import { HarmonicPianoShowcase, ProjectModelScene } from "@/components/project-visuals";
+import {
+  HarmonicPianoShowcase,
+  MangaGeneratorShowcase,
+  ProjectModelScene,
+} from "@/components/project-visuals";
 import { ProjectExplorer } from "@/components/project-explorer";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
@@ -130,6 +134,7 @@ export default function Home() {
             and hardware test rigs.
           </p>
         </div>
+        <MangaGeneratorShowcase />
         <HarmonicPianoShowcase />
         <ProjectModelScene />
         <ProjectExplorer sections={historySections} />

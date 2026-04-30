@@ -1,0 +1,1 @@
+Reborn as an infant in a noble fantasy household, Lio Veyr discovers that magic is real, lessons are happening right beneath his nursery, and his adult mind may let him learn far earlier than anyone should. But every secret success risks exposing the impossible truth: he understands far too much for a baby.

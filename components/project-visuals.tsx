@@ -6,6 +6,63 @@ import Image from "next/image";
 import Link from "next/link";
 import * as THREE from "three";
 
+const mangaExplainerVideo = "/Manga/manga-generator-explainer.mp4";
+const mangaExplainerPoster = "/Manga/RebornAgain1/thumbnail.png";
+
+export function MangaGeneratorShowcase() {
+  return (
+    <section className="feature-showcase manga-feature-showcase" data-reveal>
+      <Link
+        className="feature-card-link"
+        href="/projects/manga-generator-and-viewer"
+        aria-label="Read the manga generator writeup"
+      />
+      <div className="feature-copy">
+        <p className="eyebrow">Featured experiment</p>
+        <h3>
+          <Link
+            className="feature-title-link"
+            href="/projects/manga-generator-and-viewer"
+          >
+            Manga Generator and Viewer
+          </Link>
+        </h3>
+        <p>
+          A manga generation and reading demo that turns local story folders into
+          a browser-native library, with mobile reading, progress tracking, and
+          zoomable pages.
+        </p>
+        <div className="history-links">
+          <Link href="/projects/manga-generator-and-viewer">
+            Read writeup
+            <ArrowUpRight aria-hidden="true" />
+          </Link>
+          <Link href="/manga">
+            Open demo
+            <ArrowUpRight aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+      <Link
+        className="manga-feature-media"
+        href="/projects/manga-generator-and-viewer"
+        aria-label="Read the manga generator writeup"
+      >
+        <video
+          aria-label="Manga generator explainer infographic"
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster={mangaExplainerPoster}
+        >
+          <source src={mangaExplainerVideo} type="video/mp4" />
+        </video>
+      </Link>
+    </section>
+  );
+}
+
 export function HarmonicPianoShowcase() {
   return (
     <section className="feature-showcase" data-reveal>

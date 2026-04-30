@@ -29,6 +29,15 @@ export const historySections = [
     title: "TimeSurgeLabs and applied AI systems",
     items: [
       {
+        name: "Manga Generator and Viewer",
+        description:
+          "A manga generation pipeline and reader demo that loads local story folders and supports mobile reading, progress tracking, and zoomable pages.",
+        href: "/manga",
+        techStack: ["Next.js", "Manga reader", "Interactive UI"],
+        useCases: ["Demo", "Creative tool"],
+        timeline: "AI media and games era",
+      },
+      {
         name: "TimeSurgeLabs",
         description:
           "Cofounder of an AI-accelerated software development studio focused on building apps with AI.",
@@ -138,15 +147,6 @@ export const historySections = [
         secondaryLabel: "Inspiration",
         techStack: ["Audio synthesis", "Web audio", "Interactive UI"],
         useCases: ["Music tool", "Creative tool"],
-        timeline: "AI media and games era",
-      },
-      {
-        name: "Web Manga Viewer",
-        description:
-          "A browser-based manga reader demo that loads local story folders and supports chapter selection, reading direction, and page navigation.",
-        href: "/manga",
-        techStack: ["Next.js", "Manga reader", "Interactive UI"],
-        useCases: ["Demo", "Creative tool"],
         timeline: "AI media and games era",
       },
       {

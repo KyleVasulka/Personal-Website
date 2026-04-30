@@ -1,0 +1,1 @@
+Series thumbnail prompt: colored manga cover image with the title "Moonmilk Grimoire"; toddler Rowan in a moonlit nursery holding a glowing milk-glass charm; blue-thread cradle bells, soft magical glyphs, warm family cottage shadows, hint of a hidden lunar door in the glow; wondrous, cozy, suspenseful.

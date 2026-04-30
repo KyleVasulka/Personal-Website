@@ -1,0 +1,1 @@
+Series thumbnail for "Lullaby of the Ember Veil": full-color manga cover art, toddler Ren Vale in foreground with amber eyes reflecting ember light, cozy Vale Manor and orchard behind him, red glass Ember Veil glowing at dusk, wooden bird mobile silhouette, magical lullaby ribbons, readable title text "Lullaby of the Ember Veil", intriguing warm fantasy tone.

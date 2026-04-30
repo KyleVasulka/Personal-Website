@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Mail } from "lucide-react";
@@ -21,6 +22,18 @@ const links = [
     icon: LinkedInIcon,
   },
   { label: "Email", href: "mailto:Kylejvasulka@gmail.com", icon: Mail },
+];
+
+const mangaExplainerVideo = "/Manga/manga-generator-explainer.mp4";
+const mangaExplainerPoster = "/Manga/RebornAgain1/thumbnail.png";
+const mangaWorkflowDiagram = "/Manga/manga-creation-workflow.png";
+const rebornAgainCarouselPages = [
+  "/Manga/RebornAgain1/Chapter%201/chapter_1_page_01.png",
+  "/Manga/RebornAgain1/Chapter%201/chapter_1_page_02.png",
+  "/Manga/RebornAgain1/Chapter%201/chapter_1_page_03.png",
+  "/Manga/RebornAgain1/Chapter%201/chapter_1_page_04.png",
+  "/Manga/RebornAgain1/Chapter%201/chapter_1_page_05.png",
+  "/Manga/RebornAgain1/Chapter%201/chapter_1_page_06.png",
 ];
 
 export function generateStaticParams() {
@@ -48,6 +61,14 @@ export async function generateMetadata({
 }
 
 function getProjectWriteup(project: NonNullable<ReturnType<typeof getProjectBySlug>>) {
+  if (project.slug === "manga-generator-and-viewer") {
+    return [
+      "I wanted to see how far I could push an agent toward making a manga end-to-end: not just generating a cool image, but building the story scaffolding around it first.",
+      "The generator side is the planning brain. It creates a project folder, picks a premise, defines the worldbuilding, plot, characters, and change log, then keeps iterating until there is enough structure to break chapters into scene beats, dialogue passes, page plans, and image prompts.",
+      "The viewer side is the practical delivery layer. Once pages exist, I can drop a manga folder into public/Manga and the site turns it into a browsable, mobile-friendly reader with progress tracking, page restoration, and custom zoom behavior.",
+    ];
+  }
+
   const categoryContext = {
     "Studio and AI products":
       "This sits in the studio/product side of the portfolio: practical AI systems, interfaces, and tools aimed at turning rough ideas into usable workflows.",
@@ -76,6 +97,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const relatedProjects = getRelatedProjects(project);
   const writeup = getProjectWriteup(project);
+  const hasMangaExplainer = project.slug === "manga-generator-and-viewer";
+  const mangaGeneratorDetails = [
+    "The generator is an agent-driven workflow for creating a manga or light-novel project from a premise. It starts by creating a story folder, generating and selecting a core idea, then defining the story terms the agent will preserve as it works.",
+    "The agent scaffolds an organized project with worldbuilding, plot, character, and changes folders. Worldbuilding captures setting, magic, history, factions, geography, religion, and lore; plot tracks arc outlines, big-P and little-p plot, promises/progress/payoff, and the series timeline; characters hold the protagonist, supporting cast, antagonists, and relationships.",
+    "After the foundation is in place, the agent iterates, reviews for consistency, plans the first three chapters, breaks each chapter into scene beats, dialogue passes, page breakdowns, panel scripts, and storyboards, then renders colored Chapter 1 manga pages while logging prompts and changes.",
+  ];
+  const mangaViewerDetails = [
+    "The viewer is the web app for reading the generated manga. Finished manga assets are placed in the app's public folder, with each story stored under public/Manga as a folder containing a thumbnail, description, chapter folders, and page images.",
+    "When the manga viewer loads, it scans those public story folders on the server, builds a library from the local files, and serves the selected story through the Next.js route at /manga. The reader supports mobile reading, progress URLs, session progress, page restoration, and custom zoom/pan behavior.",
+  ];
 
   return (
     <main className="site-shell project-page">
@@ -130,6 +161,77 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             ))}
           </div>
         </section>
+
+        {hasMangaExplainer && (
+          <>
+            <section
+              className="project-media-panel project-media-panel-stacked"
+              aria-label="Manga viewer demo"
+            >
+              <div>
+                <p className="eyebrow">Manga Viewer</p>
+                <h2>Web manga reader app</h2>
+                <div className="project-writeup-body">
+                  {mangaViewerDetails.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+              <Link
+                className="manga-page-carousel"
+                aria-label="RebornAgain1 manga page carousel"
+                href="/manga"
+              >
+                <div className="manga-page-carousel-track">
+                  {[...rebornAgainCarouselPages, ...rebornAgainCarouselPages].map(
+                    (src, index) => (
+                      <Image
+                        alt=""
+                        aria-hidden="true"
+                        height={1536}
+                        key={`${src}-${index}`}
+                        src={src}
+                        width={1024}
+                      />
+                    ),
+                  )}
+                </div>
+              </Link>
+            </section>
+
+            <section
+              className="project-media-panel project-media-panel-stacked"
+              aria-label="Manga generator workflow"
+            >
+              <div>
+                <p className="eyebrow">Manga Generator</p>
+                <h2>Agent-led story and page pipeline</h2>
+                <div className="project-writeup-body">
+                  {mangaGeneratorDetails.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+              <video
+                aria-label="Manga generator explainer"
+                autoPlay
+                loop
+                muted
+                playsInline
+                poster={mangaExplainerPoster}
+                preload="auto"
+              >
+                <source src={mangaExplainerVideo} type="video/mp4" />
+              </video>
+              <Image
+                alt="Diagram of the manga and light novel creation workflow"
+                height={1800}
+                src={mangaWorkflowDiagram}
+                width={1200}
+              />
+            </section>
+          </>
+        )}
 
         {(project.href || project.secondaryHref) && (
           <section className="project-links-panel" aria-label="Project links">

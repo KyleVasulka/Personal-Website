@@ -1,18 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  Columns2,
-  Maximize2,
-  PanelTop,
-  RotateCcw,
-  ZoomIn,
-  ZoomOut,
-} from "lucide-react";
+import { ArrowLeft, Minus, Plus, RotateCcw, X } from "lucide-react";
 
 export type MangaPage = {
   name: string;
@@ -26,66 +16,74 @@ export type MangaChapter = {
 
 export type MangaStory = {
   name: string;
+  description: string;
+  thumbnail?: string;
   chapters: MangaChapter[];
 };
 
-type ReadingDirection = "ltr" | "rtl";
-type FitMode = "height" | "width";
 type Transform = {
   scale: number;
   x: number;
   y: number;
 };
 
-type MangaReaderProps = {
-  library: MangaStory[];
+type DragState = {
+  intent: "pending" | "pan-all" | "pan-x";
+  pointerId: number;
+  pointerType: string;
+  startX: number;
+  startY: number;
+  transform: Transform;
 };
 
-type TouchGesture =
-  | {
-      type: "pinch";
-      distance: number;
-      focalX: number;
-      focalY: number;
-      startScale: number;
-      startX: number;
-      startY: number;
-    }
-  | {
-      type: "pan";
-      lastTime: number;
-      lastX: number;
-      lastY: number;
-      startTransform: Transform;
-      startX: number;
-      startY: number;
-      velocityX: number;
-      velocityY: number;
-    }
-  | {
-      type: "swipe";
-      startX: number;
-      startY: number;
-    };
+type PinchState = {
+  distance: number;
+  transform: Transform;
+};
+
+type TouchPanState = {
+  intent: "pending" | "pan-x" | "scroll-y";
+  startX: number;
+  startY: number;
+  transform: Transform;
+};
+
+type ReaderTouchEvent = {
+  preventDefault: () => void;
+  touches: TouchList;
+};
+
+type MangaReaderProps = {
+  initialPageIndex: number;
+  initialStoryName?: string;
+  library: MangaStory[];
+};
 
 /* eslint-disable @next/next/no-img-element */
 
 const minZoom = 1;
-const maxZoom = 4;
+const maxZoom = 3.5;
+const zoomStep = 0.35;
 const zoomEpsilon = 0.01;
-
-function clampPage(page: number, totalPages: number) {
-  return Math.min(Math.max(page, 0), Math.max(totalPages - 1, 0));
-}
+const pinchZoomOutSensitivity = 1.55;
+const readerStorageKey = "manga-reader-progress";
+const urlUpdateDelay = 900;
+const mobileReaderBreakpoint = 780;
+const mobileReaderGutter = 24;
+const desktopReaderMaxWidth = 860;
+const desktopReaderWidthRatio = 0.56;
 
 function clampZoom(zoom: number) {
   const clampedZoom = Math.min(Math.max(zoom, minZoom), maxZoom);
+  return Math.abs(clampedZoom - minZoom) < zoomEpsilon ? minZoom : clampedZoom;
+}
 
-  if (Math.abs(clampedZoom - minZoom) < zoomEpsilon) {
-    return minZoom;
-  }
-
-  return clampedZoom;
+function stripMarkdown(value: string) {
+  return value
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_`>#-]/g, "")
+    .trim();
 }
 
 function getTouchDistance(touches: TouchList) {
@@ -99,405 +97,430 @@ function getTouchDistance(touches: TouchList) {
   );
 }
 
-function getTouchFocalPoint(surface: HTMLDivElement, touches: TouchList) {
-  const rect = surface.getBoundingClientRect();
-
+function getTouchFocalPoint(touches: TouchList) {
   return {
-    x: (touches[0].clientX + touches[1].clientX) / 2 - rect.left,
-    y: (touches[0].clientY + touches[1].clientY) / 2 - rect.top,
+    x: (touches[0].clientX + touches[1].clientX) / 2,
+    y: (touches[0].clientY + touches[1].clientY) / 2,
   };
 }
 
-export function MangaReader({ library }: MangaReaderProps) {
-  const surfaceRef = useRef<HTMLDivElement | null>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  const gestureRef = useRef<TouchGesture | null>(null);
-  const inertiaFrameRef = useRef<number | null>(null);
-  const transformRef = useRef<Transform>({ scale: 1, x: 0, y: 0 });
-  const [storyIndex, setStoryIndex] = useState(0);
-  const [chapterIndex, setChapterIndex] = useState(0);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [direction, setDirection] = useState<ReadingDirection>("rtl");
-  const [fitMode, setFitMode] = useState<FitMode>("height");
-  const [showAllPages, setShowAllPages] = useState(false);
-  const [transform, setTransform] = useState<Transform>({
-    scale: 1,
-    x: 0,
-    y: 0,
-  });
+function getPinchZoomMultiplier(distance: number, startDistance: number) {
+  const multiplier = distance / Math.max(startDistance, 1);
 
-  const selectedStory = library[storyIndex];
-  const selectedChapter = selectedStory?.chapters[chapterIndex];
-  const pages = selectedChapter?.pages ?? [];
-  const safePageIndex = clampPage(pageIndex, pages.length);
-  const currentPage = pages[safePageIndex];
+  if (multiplier >= 1) {
+    return multiplier;
+  }
+
+  return multiplier ** pinchZoomOutSensitivity;
+}
+
+function normalizeWheelDelta(delta: number, deltaMode: number) {
+  if (deltaMode === 1) {
+    return delta * 16;
+  }
+
+  if (deltaMode === 2) {
+    return delta * window.innerHeight;
+  }
+
+  return delta;
+}
+
+function getReaderWidth() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const viewportWidths = [
+    window.visualViewport?.width,
+    window.innerWidth,
+    document.documentElement.clientWidth,
+  ].filter((width): width is number => typeof width === "number" && width > 0);
+
+  if (viewportWidths.length === 0) {
+    return null;
+  }
+
+  const viewportWidth = Math.floor(Math.min(...viewportWidths));
+
+  if (viewportWidth <= mobileReaderBreakpoint) {
+    return Math.max(280, viewportWidth - mobileReaderGutter);
+  }
+
+  return Math.min(
+    desktopReaderMaxWidth,
+    Math.floor(viewportWidth * desktopReaderWidthRatio),
+  );
+}
+
+export function MangaReader({
+  initialPageIndex,
+  initialStoryName,
+  library,
+}: MangaReaderProps) {
+  const surfaceRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const dragRef = useRef<DragState | null>(null);
+  const pinchRef = useRef<PinchState | null>(null);
+  const touchPanRef = useRef<TouchPanState | null>(null);
+  const pageRefs = useRef<Array<HTMLImageElement | null>>([]);
+  const restoredPageRef = useRef(false);
+  const lastSavedPageRef = useRef(initialPageIndex);
+  const scrollFrameRef = useRef<number | null>(null);
+  const urlUpdateTimeoutRef = useRef<number | null>(null);
+  const transformRef = useRef<Transform>({ scale: 1, x: 0, y: 0 });
+  const [selectedStory, setSelectedStory] = useState<MangaStory | null>(
+    () => library.find((story) => story.name === initialStoryName) ?? null,
+  );
+  const [transform, setTransform] = useState<Transform>({ scale: 1, x: 0, y: 0 });
+  const firstChapter = selectedStory?.chapters[0];
+  const pages = firstChapter?.pages ?? [];
   const isZoomed = transform.scale > minZoom + zoomEpsilon;
 
-  const chapterOptions = useMemo(
-    () =>
-      selectedStory?.chapters.map((chapter, index) => ({
-        label: chapter.name,
-        value: index,
-      })) ?? [],
-    [selectedStory],
-  );
-
-  function getBounds(scale: number) {
+  const getBounds = useCallback((scale: number) => {
     const surface = surfaceRef.current;
-    const image = imageRef.current;
+    const content = contentRef.current;
 
-    if (!surface || !image) {
+    if (!surface || !content || scale <= minZoom + zoomEpsilon) {
       return { x: 0, y: 0 };
     }
 
     return {
-      x: Math.max(0, (image.offsetWidth * scale - surface.clientWidth) / 2),
-      y: Math.max(0, (image.offsetHeight * scale - surface.clientHeight) / 2),
+      x: Math.max(0, content.offsetWidth * scale - surface.clientWidth),
+      y: Math.max(0, content.offsetHeight * scale - surface.clientHeight),
     };
-  }
-
-  function clampTransform(next: Transform): Transform {
-    const scale = clampZoom(next.scale);
-
-    if (scale <= minZoom + zoomEpsilon) {
-      return { scale: 1, x: 0, y: 0 };
-    }
-
-    const bounds = getBounds(scale);
-
-    return {
-      scale,
-      x: Math.min(Math.max(next.x, -bounds.x), bounds.x),
-      y: Math.min(Math.max(next.y, -bounds.y), bounds.y),
-    };
-  }
-
-  const cancelInertia = useCallback(() => {
-    if (inertiaFrameRef.current !== null) {
-      cancelAnimationFrame(inertiaFrameRef.current);
-      inertiaFrameRef.current = null;
-    }
   }, []);
 
-  function applyTransform(next: Transform) {
-    const clamped = clampTransform(next);
-    transformRef.current = clamped;
-    setTransform(clamped);
-  }
+  const clampTransform = useCallback(
+    (next: Transform): Transform => {
+      const scale = clampZoom(next.scale);
+
+      if (scale <= minZoom + zoomEpsilon) {
+        return { scale: 1, x: 0, y: 0 };
+      }
+
+      const bounds = getBounds(scale);
+
+      return {
+        scale,
+        x: Math.min(Math.max(next.x, -bounds.x), 0),
+        y: Math.min(Math.max(next.y, -bounds.y), 0),
+      };
+    },
+    [getBounds],
+  );
+
+  const applyTransform = useCallback(
+    (next: Transform) => {
+      const clamped = clampTransform(next);
+      transformRef.current = clamped;
+      setTransform(clamped);
+    },
+    [clampTransform],
+  );
 
   const resetZoom = useCallback(() => {
-    cancelInertia();
-    gestureRef.current = null;
+    dragRef.current = null;
+    pinchRef.current = null;
+    touchPanRef.current = null;
     transformRef.current = { scale: 1, x: 0, y: 0 };
     setTransform({ scale: 1, x: 0, y: 0 });
     window.scrollTo({ left: 0, top: window.scrollY });
-  }, [cancelInertia]);
+  }, []);
 
-  function zoomAroundPoint(nextScale: number, focalX?: number, focalY?: number) {
-    cancelInertia();
+  const resetHorizontalScroll = useCallback(() => {
+    window.scrollTo({ left: 0, top: window.scrollY });
 
+    const scrollingElement = document.scrollingElement;
+
+    if (scrollingElement) {
+      scrollingElement.scrollLeft = 0;
+    }
+
+    document.documentElement.scrollLeft = 0;
+    document.body.scrollLeft = 0;
+  }, []);
+
+  const updateMeasuredReaderWidth = useCallback(() => {
     const surface = surfaceRef.current;
-    const previous = transformRef.current;
-    const scale = clampZoom(nextScale);
+    const readerWidth = getReaderWidth();
 
-    if (!surface || scale <= minZoom + zoomEpsilon) {
-      resetZoom();
+    if (!surface || !readerWidth) {
       return;
     }
 
-    const centerX = surface.clientWidth / 2;
-    const centerY = surface.clientHeight / 2;
-    const pointX = focalX ?? centerX;
-    const pointY = focalY ?? centerY;
-    const contentX = (pointX - centerX - previous.x) / previous.scale;
-    const contentY = (pointY - centerY - previous.y) / previous.scale;
+    surface.style.setProperty("--manga-measured-width", `${readerWidth}px`);
+  }, []);
 
-    applyTransform({
-      scale,
-      x: pointX - centerX - contentX * scale,
-      y: pointY - centerY - contentY * scale,
-    });
-  }
+  const zoomAroundPoint = useCallback(
+    (nextScale: number, clientX?: number, clientY?: number) => {
+      const surface = surfaceRef.current;
+      const content = contentRef.current;
+      const previous = transformRef.current;
+      const scale = clampZoom(nextScale);
 
-  const goToPreviousPage = useCallback(() => {
-    setPageIndex((current) => clampPage(current - 1, pages.length));
-    resetZoom();
-  }, [pages.length, resetZoom]);
-
-  const goToNextPage = useCallback(() => {
-    setPageIndex((current) => clampPage(current + 1, pages.length));
-    resetZoom();
-  }, [pages.length, resetZoom]);
-
-  const goToDirectionalPreviousPage = useCallback(() => {
-    if (direction === "rtl") {
-      goToNextPage();
-      return;
-    }
-
-    goToPreviousPage();
-  }, [direction, goToNextPage, goToPreviousPage]);
-
-  const goToDirectionalNextPage = useCallback(() => {
-    if (direction === "rtl") {
-      goToPreviousPage();
-      return;
-    }
-
-    goToNextPage();
-  }, [direction, goToNextPage, goToPreviousPage]);
-
-  function goToPreviousChapter() {
-    setChapterIndex((current) => Math.max(current - 1, 0));
-    setPageIndex(0);
-    resetZoom();
-  }
-
-  function goToNextChapter() {
-    const lastChapterIndex = Math.max((selectedStory?.chapters.length ?? 1) - 1, 0);
-    setChapterIndex((current) => Math.min(current + 1, lastChapterIndex));
-    setPageIndex(0);
-    resetZoom();
-  }
-
-  function startInertia(velocityX: number, velocityY: number) {
-    const speed = Math.hypot(velocityX, velocityY);
-
-    if (speed < 0.08 || transformRef.current.scale <= minZoom + zoomEpsilon) {
-      return;
-    }
-
-    let xVelocity = velocityX;
-    let yVelocity = velocityY;
-    let lastTime: number | null = null;
-
-    function coast(timestamp: number) {
-      const previousTime = lastTime ?? timestamp;
-      const elapsed = Math.min(timestamp - previousTime, 32);
-      lastTime = timestamp;
-      const current = transformRef.current;
-      const next = clampTransform({
-        ...current,
-        x: current.x + xVelocity * elapsed,
-        y: current.y + yVelocity * elapsed,
-      });
-
-      if (Math.abs(next.x - current.x) < 0.1) {
-        xVelocity = 0;
-      }
-
-      if (Math.abs(next.y - current.y) < 0.1) {
-        yVelocity = 0;
-      }
-
-      transformRef.current = next;
-      setTransform(next);
-
-      const friction = Math.pow(0.94, elapsed / 16);
-      xVelocity *= friction;
-      yVelocity *= friction;
-
-      if (Math.hypot(xVelocity, yVelocity) < 0.02) {
-        inertiaFrameRef.current = null;
+      if (!surface || !content || scale <= minZoom + zoomEpsilon) {
+        resetZoom();
         return;
       }
 
-      inertiaFrameRef.current = requestAnimationFrame(coast);
+      const surfaceRect = surface.getBoundingClientRect();
+      const focalX =
+        (clientX ?? surfaceRect.left + surface.clientWidth / 2) - surfaceRect.left;
+      const focalY =
+        (clientY ?? surfaceRect.top + surface.clientHeight / 2) - surfaceRect.top;
+      const contentX = (focalX - content.offsetLeft - previous.x) / previous.scale;
+      const contentY = (focalY - content.offsetTop - previous.y) / previous.scale;
+
+      applyTransform({
+        scale,
+        x: focalX - content.offsetLeft - contentX * scale,
+        y: focalY - content.offsetTop - contentY * scale,
+      });
+    },
+    [applyTransform, resetZoom],
+  );
+
+  const saveReaderProgress = useCallback((story: MangaStory, pageIndex: number) => {
+    if (lastSavedPageRef.current === pageIndex) {
+      return;
     }
 
-    inertiaFrameRef.current = requestAnimationFrame(coast);
+    lastSavedPageRef.current = pageIndex;
+
+    try {
+      window.sessionStorage.setItem(
+        readerStorageKey,
+        JSON.stringify({
+          page: pageIndex + 1,
+          story: story.name,
+        }),
+      );
+    } catch {
+      // Storage can be unavailable in private browsing; the URL remains enough.
+    }
+
+    if (urlUpdateTimeoutRef.current !== null) {
+      window.clearTimeout(urlUpdateTimeoutRef.current);
+    }
+
+    urlUpdateTimeoutRef.current = window.setTimeout(() => {
+      urlUpdateTimeoutRef.current = null;
+
+      try {
+        const params = new URLSearchParams(window.location.search);
+        params.set("story", story.name);
+        params.set("page", String(pageIndex + 1));
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${params}`,
+        );
+      } catch {
+        // Mobile browsers can reject frequent history writes while scrolling.
+      }
+    }, urlUpdateDelay);
+  }, []);
+
+  function openStory(story: MangaStory) {
+    setSelectedStory(story);
+    restoredPageRef.current = true;
+    lastSavedPageRef.current = 0;
+    resetZoom();
+    saveReaderProgress(story, 0);
+
+    try {
+      const params = new URLSearchParams(window.location.search);
+      params.set("story", story.name);
+      params.set("page", "1");
+      window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
+    } catch {
+      // Non-critical; scroll progress is also stored in sessionStorage.
+    }
+
+    window.scrollTo({ left: 0, top: 0 });
   }
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "ArrowLeft") {
-        goToDirectionalPreviousPage();
-      }
-
-      if (event.key === "ArrowRight") {
-        goToDirectionalNextPage();
-      }
+  function closeStory() {
+    setSelectedStory(null);
+    restoredPageRef.current = false;
+    lastSavedPageRef.current = 0;
+    resetZoom();
+    try {
+      window.sessionStorage.removeItem(readerStorageKey);
+      window.history.replaceState(null, "", window.location.pathname);
+    } catch {
+      // Leaving the URL alone is better than crashing the reader.
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goToDirectionalNextPage, goToDirectionalPreviousPage]);
-
-  useEffect(() => {
-    if (!isZoomed) {
+  function handlePointerDown(event: React.PointerEvent<HTMLElement>) {
+    if (!isZoomed || event.button !== 0) {
       return;
     }
 
-    const previousOverflow = document.body.style.overflow;
-    const previousOverscroll = document.body.style.overscrollBehavior;
-    document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
+    if (event.pointerType === "touch") {
+      return;
+    }
 
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.overscrollBehavior = previousOverscroll;
+    event.preventDefault();
+    dragRef.current = {
+      intent: "pan-all",
+      pointerId: event.pointerId,
+      pointerType: event.pointerType,
+      startX: event.clientX,
+      startY: event.clientY,
+      transform: transformRef.current,
     };
-  }, [isZoomed]);
 
-  function handleTouchStart(event: globalThis.TouchEvent) {
-    if ((event.target as HTMLElement).closest("button")) {
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Some automated pointer events do not have an active pointer to capture.
+    }
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLElement>) {
+    const drag = dragRef.current;
+
+    if (!drag || drag.pointerId !== event.pointerId) {
       return;
     }
 
-    cancelInertia();
+    const deltaX = event.clientX - drag.startX;
+    const deltaY = event.clientY - drag.startY;
 
-    if (event.touches.length >= 2 && surfaceRef.current) {
-      const focal = getTouchFocalPoint(surfaceRef.current, event.touches);
+    event.preventDefault();
+    applyTransform({
+      scale: transformRef.current.scale,
+      x: drag.transform.x + deltaX,
+      y: drag.transform.y + deltaY,
+    });
+  }
 
-      gestureRef.current = {
-        type: "pinch",
+  function handlePointerUp(event: React.PointerEvent<HTMLElement>) {
+    if (dragRef.current?.pointerId === event.pointerId) {
+      dragRef.current = null;
+    }
+  }
+
+  function handleWheel(event: React.WheelEvent<HTMLElement>) {
+    if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+      zoomAroundPoint(
+        transformRef.current.scale + (event.deltaY > 0 ? -zoomStep : zoomStep),
+        event.clientX,
+        event.clientY,
+      );
+      return;
+    }
+
+    const horizontalDelta = normalizeWheelDelta(
+      event.deltaX || (event.shiftKey ? event.deltaY : 0),
+      event.deltaMode,
+    );
+
+    if (!isZoomed || Math.abs(horizontalDelta) < 1) {
+      return;
+    }
+
+    if (event.shiftKey) {
+      event.preventDefault();
+    }
+
+    applyTransform({
+      ...transformRef.current,
+      x: transformRef.current.x - horizontalDelta,
+    });
+  }
+
+  function handleTouchStart(event: ReaderTouchEvent) {
+    if (event.touches.length >= 2) {
+      event.preventDefault();
+      touchPanRef.current = null;
+      pinchRef.current = {
         distance: getTouchDistance(event.touches),
-        focalX: focal.x,
-        focalY: focal.y,
-        startScale: transformRef.current.scale,
-        startX: transformRef.current.x,
-        startY: transformRef.current.y,
+        transform: transformRef.current,
       };
+      return;
+    }
+
+    if (!isZoomed) {
+      pinchRef.current = null;
+      touchPanRef.current = null;
+      return;
+    }
+
+    touchPanRef.current = null;
+    const touch = event.touches[0];
+
+    touchPanRef.current = {
+      intent: "pending",
+      startX: touch.clientX,
+      startY: touch.clientY,
+      transform: transformRef.current,
+    };
+  }
+
+  function handleTouchMove(event: ReaderTouchEvent) {
+    const pinch = pinchRef.current;
+
+    if (pinch && event.touches.length >= 2) {
+      event.preventDefault();
+      const focal = getTouchFocalPoint(event.touches);
+      const nextScale = pinch.transform.scale * getPinchZoomMultiplier(
+        getTouchDistance(event.touches),
+        pinch.distance,
+      );
+
+      transformRef.current = pinch.transform;
+      zoomAroundPoint(nextScale, focal.x, focal.y);
+      return;
+    }
+
+    const touchPan = touchPanRef.current;
+
+    if (!touchPan || event.touches.length !== 1 || !isZoomed) {
       return;
     }
 
     const touch = event.touches[0];
+    const deltaX = touch.clientX - touchPan.startX;
+    const deltaY = touch.clientY - touchPan.startY;
 
-    if (transformRef.current.scale > minZoom + zoomEpsilon) {
-      gestureRef.current = {
-        type: "pan",
-        lastTime: performance.now(),
-        lastX: touch.clientX,
-        lastY: touch.clientY,
-        startTransform: transformRef.current,
-        startX: touch.clientX,
-        startY: touch.clientY,
-        velocityX: 0,
-        velocityY: 0,
-      };
+    if (touchPan.intent === "pending") {
+      const horizontalIntent = Math.abs(deltaX) > Math.abs(deltaY) + 6;
+      const verticalIntent = Math.abs(deltaY) > Math.abs(deltaX) + 6;
+
+      if (horizontalIntent) {
+        touchPan.intent = "pan-x";
+      } else if (verticalIntent) {
+        touchPan.intent = "scroll-y";
+      } else {
+        return;
+      }
+    }
+
+    if (touchPan.intent === "scroll-y") {
       return;
     }
 
-    gestureRef.current = {
-      type: "swipe",
-      startX: touch.clientX,
-      startY: touch.clientY,
-    };
+    event.preventDefault();
+    applyTransform({
+      scale: transformRef.current.scale,
+      x: touchPan.transform.x + deltaX,
+      y: transformRef.current.y,
+    });
   }
 
-  function handleTouchMove(event: globalThis.TouchEvent) {
-    const gesture = gestureRef.current;
-
-    if (!gesture) {
-      return;
+  function handleTouchEnd(event: ReaderTouchEvent) {
+    if (event.touches.length < 2) {
+      pinchRef.current = null;
     }
 
-    if (event.touches.length >= 2 && gesture.type === "pinch" && surfaceRef.current) {
-      event.preventDefault();
-      const focal = getTouchFocalPoint(surfaceRef.current, event.touches);
-      const scale = clampZoom(
-        gesture.startScale *
-          (getTouchDistance(event.touches) / Math.max(gesture.distance, 1)),
-      );
-
-      if (scale <= minZoom + zoomEpsilon) {
-        resetZoom();
-        return;
-      }
-
-      const centerX = surfaceRef.current.clientWidth / 2;
-      const centerY = surfaceRef.current.clientHeight / 2;
-      const contentX = (gesture.focalX - centerX - gesture.startX) / gesture.startScale;
-      const contentY = (gesture.focalY - centerY - gesture.startY) / gesture.startScale;
-      applyTransform({
-        scale,
-        x: focal.x - centerX - contentX * scale,
-        y: focal.y - centerY - contentY * scale,
-      });
-      return;
-    }
-
-    if (event.touches.length === 1 && gesture.type === "pan") {
-      const touch = event.touches[0];
-      const deltaX = touch.clientX - gesture.startX;
-      const deltaY = touch.clientY - gesture.startY;
-      const bounds = getBounds(transformRef.current.scale);
-      const wantsVerticalPan = Math.abs(deltaY) >= Math.abs(deltaX);
-      const nextX = gesture.startTransform.x + deltaX;
-      const nextY = gesture.startTransform.y + deltaY;
-      const atVerticalEdge =
-        wantsVerticalPan &&
-        ((deltaY > 0 && transformRef.current.y >= bounds.y) ||
-          (deltaY < 0 && transformRef.current.y <= -bounds.y));
-
-      if (atVerticalEdge) {
-        return;
-      }
-
-      event.preventDefault();
-      const now = performance.now();
-      const elapsed = Math.max(now - gesture.lastTime, 1);
-      gesture.velocityX = (touch.clientX - gesture.lastX) / elapsed;
-      gesture.velocityY = (touch.clientY - gesture.lastY) / elapsed;
-      gesture.lastX = touch.clientX;
-      gesture.lastY = touch.clientY;
-      gesture.lastTime = now;
-      applyTransform({
-        scale: transformRef.current.scale,
-        x: nextX,
-        y: nextY,
-      });
-      return;
-    }
-
-    if (event.touches.length === 1 && gesture.type === "swipe") {
-      const touch = event.touches[0];
-      const deltaX = touch.clientX - gesture.startX;
-      const deltaY = touch.clientY - gesture.startY;
-
-      if (Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY)) {
-        event.preventDefault();
-      }
-    }
-  }
-
-  function handleTouchEnd(event: globalThis.TouchEvent) {
-    const gesture = gestureRef.current;
-
-    if (!gesture || event.touches.length > 0) {
-      return;
-    }
-
-    gestureRef.current = null;
-
-    if (gesture.type === "pinch") {
-      if (transformRef.current.scale <= minZoom + zoomEpsilon) {
-        resetZoom();
-        return;
-      }
-      setTransform(transformRef.current);
-      return;
-    }
-
-    if (gesture.type === "pan") {
-      startInertia(gesture.velocityX, gesture.velocityY);
-      return;
-    }
-
-    const touch = event.changedTouches[0];
-    const deltaX = touch.clientX - gesture.startX;
-    const deltaY = touch.clientY - gesture.startY;
-    const isHorizontalSwipe =
-      Math.abs(deltaX) > 42 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35;
-
-    if (!isHorizontalSwipe) {
-      return;
-    }
-
-    if (deltaX < 0) {
-      goToDirectionalPreviousPage();
-    } else {
-      goToDirectionalNextPage();
+    if (event.touches.length === 0) {
+      touchPanRef.current = null;
     }
   }
 
@@ -508,18 +531,181 @@ export function MangaReader({ library }: MangaReaderProps) {
       return;
     }
 
-    surface.addEventListener("touchstart", handleTouchStart, { passive: false });
-    surface.addEventListener("touchmove", handleTouchMove, { passive: false });
-    surface.addEventListener("touchend", handleTouchEnd, { passive: false });
-    surface.addEventListener("touchcancel", handleTouchEnd, { passive: false });
+    const handleNativeTouchStart = (event: TouchEvent) => handleTouchStart(event);
+    const handleNativeTouchMove = (event: TouchEvent) => handleTouchMove(event);
+    const handleNativeTouchEnd = (event: TouchEvent) => handleTouchEnd(event);
+
+    surface.addEventListener("touchstart", handleNativeTouchStart, {
+      passive: false,
+    });
+    surface.addEventListener("touchmove", handleNativeTouchMove, {
+      passive: false,
+    });
+    surface.addEventListener("touchend", handleNativeTouchEnd, {
+      passive: false,
+    });
+    surface.addEventListener("touchcancel", handleNativeTouchEnd, {
+      passive: false,
+    });
 
     return () => {
-      surface.removeEventListener("touchstart", handleTouchStart);
-      surface.removeEventListener("touchmove", handleTouchMove);
-      surface.removeEventListener("touchend", handleTouchEnd);
-      surface.removeEventListener("touchcancel", handleTouchEnd);
+      surface.removeEventListener("touchstart", handleNativeTouchStart);
+      surface.removeEventListener("touchmove", handleNativeTouchMove);
+      surface.removeEventListener("touchend", handleNativeTouchEnd);
+      surface.removeEventListener("touchcancel", handleNativeTouchEnd);
     };
   });
+
+  useLayoutEffect(() => {
+    function updateReaderWidth() {
+      updateMeasuredReaderWidth();
+      resetHorizontalScroll();
+      applyTransform(transformRef.current);
+    }
+
+    updateReaderWidth();
+
+    window.visualViewport?.addEventListener("resize", updateReaderWidth);
+    window.addEventListener("resize", updateReaderWidth);
+    window.addEventListener("orientationchange", updateReaderWidth);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", updateReaderWidth);
+      window.removeEventListener("resize", updateReaderWidth);
+      window.removeEventListener("orientationchange", updateReaderWidth);
+    };
+  }, [applyTransform, resetHorizontalScroll, updateMeasuredReaderWidth]);
+
+  useEffect(() => {
+    if (!("scrollRestoration" in window.history)) {
+      return;
+    }
+
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    return () => {
+      window.history.scrollRestoration = previousRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (selectedStory || initialStoryName) {
+      return;
+    }
+
+    let restoreTimeout: number | null = null;
+
+    try {
+      const progress = JSON.parse(
+        window.sessionStorage.getItem(readerStorageKey) ?? "null",
+      ) as { page?: number; story?: string } | null;
+      const story = library.find((item) => item.name === progress?.story);
+
+      if (!story) {
+        return;
+      }
+
+      lastSavedPageRef.current = Math.max((progress?.page ?? 1) - 1, 0);
+      restoredPageRef.current = false;
+      restoreTimeout = window.setTimeout(() => setSelectedStory(story), 0);
+    } catch {
+      // Bad stored state should not stop the library from loading.
+    }
+
+    return () => {
+      if (restoreTimeout !== null) {
+        window.clearTimeout(restoreTimeout);
+      }
+    };
+  }, [initialStoryName, library, selectedStory]);
+
+  useEffect(() => {
+    if (selectedStory) {
+      resetHorizontalScroll();
+    }
+  }, [resetHorizontalScroll, selectedStory]);
+
+  useEffect(() => {
+    function handleResize() {
+      applyTransform(transformRef.current);
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [applyTransform]);
+
+  useEffect(() => {
+    if (!selectedStory) {
+      return;
+    }
+
+    const story = selectedStory;
+
+    function handleScroll() {
+      if (scrollFrameRef.current !== null) {
+        return;
+      }
+
+      scrollFrameRef.current = requestAnimationFrame(() => {
+        scrollFrameRef.current = null;
+        const readingLine = Math.min(window.innerHeight * 0.35, 260);
+        let activePage = 0;
+        let activeDistance = Number.POSITIVE_INFINITY;
+
+        pageRefs.current.forEach((page, index) => {
+          if (!page) {
+            return;
+          }
+
+          const distance = Math.abs(page.getBoundingClientRect().top - readingLine);
+
+          if (distance < activeDistance) {
+            activeDistance = distance;
+            activePage = index;
+          }
+        });
+
+        saveReaderProgress(story, activePage);
+      });
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+
+      if (scrollFrameRef.current !== null) {
+        cancelAnimationFrame(scrollFrameRef.current);
+        scrollFrameRef.current = null;
+      }
+
+      if (urlUpdateTimeoutRef.current !== null) {
+        window.clearTimeout(urlUpdateTimeoutRef.current);
+        urlUpdateTimeoutRef.current = null;
+      }
+    };
+  }, [saveReaderProgress, selectedStory]);
+
+  useEffect(() => {
+    if (!selectedStory || restoredPageRef.current) {
+      return;
+    }
+
+    const frame = requestAnimationFrame(() => {
+      const pageIndex = initialStoryName
+        ? initialPageIndex
+        : lastSavedPageRef.current;
+
+      pageRefs.current[pageIndex]?.scrollIntoView({
+        block: "start",
+        inline: "start",
+      });
+      resetHorizontalScroll();
+      restoredPageRef.current = true;
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [initialPageIndex, initialStoryName, resetHorizontalScroll, selectedStory]);
 
   if (library.length === 0) {
     return (
@@ -529,256 +715,159 @@ export function MangaReader({ library }: MangaReaderProps) {
             <ArrowLeft aria-hidden="true" />
             Project history
           </Link>
-          <h1>Web Manga Viewer</h1>
+          <h1>Manga Library</h1>
           <p>
-            Add story folders to <code>public/Manga</code> to load them into the
-            demo reader.
+            Add story folders to <code>public/Manga</code> with a thumbnail,
+            description, and chapter images to load the reader.
           </p>
         </div>
       </main>
     );
   }
 
-  const isFirstPage = safePageIndex <= 0;
-  const isLastPage = safePageIndex >= pages.length - 1;
-  const isFirstChapter = chapterIndex <= 0;
-  const isLastChapter =
-    chapterIndex >= Math.max((selectedStory?.chapters.length ?? 1) - 1, 0);
-
-  return (
-    <main className="manga-shell">
-      <section className="manga-reader" aria-labelledby="manga-title">
-        <aside className="manga-sidebar" aria-label="Manga controls">
-          <Link className="project-back-link" href="/#work">
+  if (selectedStory) {
+    return (
+      <main className="manga-shell manga-shell-reader">
+        <header className="manga-reader-bar">
+          <button className="manga-text-button" onClick={closeStory} type="button">
             <ArrowLeft aria-hidden="true" />
-            Project history
-          </Link>
-
+            <span>Library</span>
+          </button>
           <div>
-            <p className="eyebrow">Demo</p>
-            <h1 id="manga-title">Web Manga Viewer</h1>
-            <p>
-              Load a local manga folder, pick a chapter, and read through the
-              pages in a browser-friendly view.
-            </p>
+            <p>{selectedStory.name}</p>
+            <h1>{firstChapter?.name ?? "Chapter 1"}</h1>
           </div>
-
-          <label className="manga-field" htmlFor="story-select">
-            Story
-            <select
-              id="story-select"
-              onChange={(event) => {
-                setStoryIndex(Number(event.target.value));
-                setChapterIndex(0);
-                setPageIndex(0);
-                resetZoom();
-              }}
-              suppressHydrationWarning
-              value={storyIndex}
-            >
-              {library.map((story, index) => (
-                <option key={story.name} value={index}>
-                  {story.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="manga-field" htmlFor="chapter-select">
-            Chapter
-            <select
-              id="chapter-select"
-              onChange={(event) => {
-                setChapterIndex(Number(event.target.value));
-                setPageIndex(0);
-                resetZoom();
-              }}
-              suppressHydrationWarning
-              value={chapterIndex}
-            >
-              {chapterOptions.map((chapter) => (
-                <option key={chapter.label} value={chapter.value}>
-                  {chapter.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="manga-field" htmlFor="page-range">
-            Page {safePageIndex + 1} of {pages.length}
-            <input
-              id="page-range"
-              max={Math.max(pages.length - 1, 0)}
-              min={0}
-              onChange={(event) => setPageIndex(Number(event.target.value))}
-              type="range"
-              value={safePageIndex}
-            />
-          </label>
-
-          <div className="manga-toggle-group" aria-label="Reading direction">
-            <button
-              aria-pressed={direction === "rtl"}
-              onClick={() => setDirection("rtl")}
-              type="button"
-            >
-              RTL
-            </button>
-            <button
-              aria-pressed={direction === "ltr"}
-              onClick={() => setDirection("ltr")}
-              type="button"
-            >
-              LTR
-            </button>
-          </div>
-
-          <div className="manga-icon-row" aria-label="Viewer mode">
-            <button
-              aria-label="Fit page height"
-              aria-pressed={fitMode === "height"}
-              onClick={() => setFitMode("height")}
-              type="button"
-              title="Fit page height"
-            >
-              <Maximize2 aria-hidden="true" />
-            </button>
-            <button
-              aria-label="Fit page width"
-              aria-pressed={fitMode === "width"}
-              onClick={() => setFitMode("width")}
-              type="button"
-              title="Fit page width"
-            >
-              <PanelTop aria-hidden="true" />
-            </button>
-            <button
-              aria-label="Show all pages"
-              aria-pressed={showAllPages}
-              onClick={() => setShowAllPages((current) => !current)}
-              type="button"
-              title="Show all pages"
-            >
-              <Columns2 aria-hidden="true" />
-            </button>
+          <div className="manga-zoom-controls" aria-label="Zoom controls">
             <button
               aria-label="Zoom out"
               disabled={!isZoomed}
-              onClick={() => zoomAroundPoint(transform.scale - 0.35)}
+              onClick={() => zoomAroundPoint(transform.scale - zoomStep)}
               type="button"
-              title="Zoom out"
             >
-              <ZoomOut aria-hidden="true" />
+              <Minus aria-hidden="true" />
             </button>
             <button
               aria-label="Reset zoom"
               disabled={!isZoomed}
               onClick={resetZoom}
               type="button"
-              title="Reset zoom"
             >
               <RotateCcw aria-hidden="true" />
             </button>
             <button
               aria-label="Zoom in"
               disabled={transform.scale >= maxZoom}
-              onClick={() => zoomAroundPoint(transform.scale + 0.35)}
-              type="button"
-              title="Zoom in"
-            >
-              <ZoomIn aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="manga-chapter-nav">
-            <button
-              disabled={isFirstChapter}
-              onClick={goToPreviousChapter}
+              onClick={() => zoomAroundPoint(transform.scale + zoomStep)}
               type="button"
             >
-              Previous chapter
-            </button>
-            <button disabled={isLastChapter} onClick={goToNextChapter} type="button">
-              Next chapter
+              <Plus aria-hidden="true" />
             </button>
           </div>
-        </aside>
+        </header>
 
-        <section className="manga-stage" aria-label="Manga pages">
-          <div className="manga-stage-header">
-            <div>
-              <p>{selectedStory?.name}</p>
-              <h2>{selectedChapter?.name}</h2>
-            </div>
-            <span>
-              {safePageIndex + 1}/{pages.length}
-            </span>
+        <section
+          aria-label={`${selectedStory.name} pages`}
+          className="manga-scroll-viewport"
+          data-zoomed={isZoomed}
+          onDoubleClick={(event) =>
+            zoomAroundPoint(isZoomed ? 1 : 2, event.clientX, event.clientY)
+          }
+          onPointerCancel={handlePointerUp}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onWheel={handleWheel}
+          ref={(node) => {
+            surfaceRef.current = node;
+            updateMeasuredReaderWidth();
+          }}
+        >
+          <button
+            aria-label="Close reader"
+            className="manga-reader-close"
+            onClick={closeStory}
+            type="button"
+          >
+            <X aria-hidden="true" />
+          </button>
+          <div
+            className="manga-page-stack"
+            ref={contentRef}
+            style={{
+              transform: `translate3d(${transform.x}px, ${transform.y}px, 0) scale(${transform.scale})`,
+            }}
+          >
+            {pages.map((page, index) => (
+              <img
+                alt={`${selectedStory.name} ${firstChapter?.name ?? "chapter"} page ${index + 1}`}
+                decoding="async"
+                key={page.src}
+                loading={index < 2 ? "eager" : "lazy"}
+                onLoad={() => {
+                  const restoreIndex = initialStoryName
+                    ? initialPageIndex
+                    : lastSavedPageRef.current;
+
+                  if (index === restoreIndex && !restoredPageRef.current) {
+                    pageRefs.current[index]?.scrollIntoView({
+                      block: "start",
+                      inline: "start",
+                    });
+                    resetHorizontalScroll();
+                    restoredPageRef.current = true;
+                  }
+                }}
+                ref={(node) => {
+                  pageRefs.current[index] = node;
+                }}
+                src={page.src}
+              />
+            ))}
           </div>
-
-          {showAllPages ? (
-            <div className="manga-scroll-strip" data-direction={direction}>
-              {pages.map((page, index) => (
-                <img
-                  alt={`${selectedChapter?.name} page ${index + 1}`}
-                  key={page.src}
-                  src={page.src}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="manga-page-frame" data-fit={fitMode}>
-              <button
-                aria-label={direction === "rtl" ? "Next page" : "Previous page"}
-                className="manga-page-button"
-                disabled={direction === "rtl" ? isLastPage : isFirstPage}
-                onClick={direction === "rtl" ? goToNextPage : goToPreviousPage}
-                type="button"
-              >
-                <ChevronLeft aria-hidden="true" />
-              </button>
-
-              <div
-                className="manga-zoom-surface"
-                data-zoomed={isZoomed}
-                onDoubleClick={() =>
-                  zoomAroundPoint(isZoomed ? 1 : 2)
-                }
-                ref={surfaceRef}
-              >
-                {isZoomed && (
-                  <button
-                    aria-label="Exit zoom"
-                    className="manga-zoom-exit"
-                    onClick={resetZoom}
-                    type="button"
-                  >
-                    <RotateCcw aria-hidden="true" />
-                  </button>
-                )}
-                {currentPage && (
-                  <img
-                    alt={`${selectedChapter?.name} page ${safePageIndex + 1}`}
-                    ref={imageRef}
-                    src={currentPage.src}
-                    style={{
-                      transform: `translate3d(${transform.x}px, ${transform.y}px, 0) scale(${transform.scale})`,
-                    }}
-                  />
-                )}
-              </div>
-
-              <button
-                aria-label={direction === "rtl" ? "Previous page" : "Next page"}
-                className="manga-page-button"
-                disabled={direction === "rtl" ? isFirstPage : isLastPage}
-                onClick={direction === "rtl" ? goToPreviousPage : goToNextPage}
-                type="button"
-              >
-                <ChevronRight aria-hidden="true" />
-              </button>
-            </div>
-          )}
         </section>
+      </main>
+    );
+  }
+
+  return (
+    <main className="manga-shell">
+      <section className="manga-library" aria-labelledby="manga-title">
+        <header className="manga-library-header">
+          <Link className="project-back-link" href="/#work">
+            <ArrowLeft aria-hidden="true" />
+            Project history
+          </Link>
+          <div>
+            <p className="eyebrow">Demo</p>
+            <h1 id="manga-title">Manga Library</h1>
+          </div>
+        </header>
+
+        <div className="manga-grid">
+          {library.map((story) => (
+            <button
+              aria-label={`Open ${story.name}`}
+              className="manga-card"
+              key={story.name}
+              onClick={() => openStory(story)}
+              type="button"
+            >
+              <span className="manga-card-image">
+                {story.thumbnail ? (
+                  <img alt="" src={story.thumbnail} />
+                ) : (
+                  <span aria-hidden="true">{story.name.slice(0, 1)}</span>
+                )}
+                {story.description && (
+                  <span className="manga-card-description">
+                    {stripMarkdown(story.description)}
+                  </span>
+                )}
+              </span>
+              <span className="manga-card-title">{story.name}</span>
+            </button>
+          ))}
+        </div>
       </section>
     </main>
   );

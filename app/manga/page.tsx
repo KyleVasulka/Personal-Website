@@ -1,12 +1,12 @@
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import type { Metadata } from "next";
 import { MangaReader, type MangaStory } from "./manga-reader";
 
 export const metadata: Metadata = {
-  title: "Web Manga Viewer | Kyle Vasulka",
+  title: "Manga Library | Kyle Vasulka",
   description:
-    "A demo manga reader that loads local story folders and supports chapter and page navigation.",
+    "A demo manga library that loads local story folders and supports scroll reading.",
 };
 
 const mangaDirectory = join(process.cwd(), "public", "Manga");
@@ -25,6 +25,14 @@ function isImageFile(fileName: string) {
   return imageExtensions.has(extension);
 }
 
+function getOptionalText(filePath: string) {
+  if (!existsSync(filePath)) {
+    return "";
+  }
+
+  return readFileSync(filePath, "utf8").trim();
+}
+
 function getMangaLibrary(): MangaStory[] {
   if (!existsSync(mangaDirectory)) {
     return [];
@@ -35,6 +43,7 @@ function getMangaLibrary(): MangaStory[] {
     .sort(naturalCompare)
     .map((storyName) => {
       const storyDirectory = join(mangaDirectory, storyName);
+      const thumbnailPath = join(storyDirectory, "thumbnail.png");
       const chapters = readdirSync(storyDirectory)
         .filter((chapterName) =>
           statSync(join(storyDirectory, chapterName)).isDirectory(),
@@ -59,12 +68,32 @@ function getMangaLibrary(): MangaStory[] {
 
       return {
         name: storyName,
+        description: getOptionalText(join(storyDirectory, "description.md")),
+        thumbnail: existsSync(thumbnailPath)
+          ? encodePublicPath(["Manga", storyName, "thumbnail.png"])
+          : chapters[0]?.pages[0]?.src,
         chapters,
       };
     })
     .filter((story) => story.chapters.length > 0);
 }
 
-export default function MangaPage() {
-  return <MangaReader library={getMangaLibrary()} />;
+type MangaPageProps = {
+  searchParams?: Promise<{
+    page?: string;
+    story?: string;
+  }>;
+};
+
+export default async function MangaPage({ searchParams }: MangaPageProps) {
+  const params = await searchParams;
+  const initialPageIndex = Math.max(Number(params?.page ?? 1) - 1, 0);
+
+  return (
+    <MangaReader
+      initialPageIndex={initialPageIndex}
+      initialStoryName={params?.story}
+      library={getMangaLibrary()}
+    />
+  );
 }

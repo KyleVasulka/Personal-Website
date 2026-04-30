@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Manga and light novel creation workflow</title>
+  <desc id="desc">An agent workflow for creating a manga project: start a story folder, generate ideas and a premise, define terms and project structure, iterate and plan, break down chapters, render colored manga pages, and output an organized project folder.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#060b12"/>
+      <stop offset="0.48" stop-color="#07131c"/>
+      <stop offset="1" stop-color="#03060b"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .mono{font-family:"SFMono-Regular","Cascadia Code","Liberation Mono",Menlo,monospace}
+      .sans{font-family:Arial,Helvetica,sans-serif}
+      .title{font-size:40px;font-weight:900;letter-spacing:1px;fill:#d9dee7}
+      .h{font-size:29px;font-weight:900}
+      .body{font-size:22px;fill:#f2f5f8}
+      .small{font-size:20px;fill:#f2f5f8}
+      .tiny{font-size:17px;fill:#cfd7e3}
+      .blue{fill:#44a3ff}.green{fill:#7ad65a}.purple{fill:#a577ff}.cyan{fill:#35d3dc}.yellow{fill:#ffc244}
+      .box{fill:#07101a;fill-opacity:.82;stroke-width:2.2}
+      .sub{fill:#07101a;fill-opacity:.72;stroke-width:1.8}
+      .arrow{stroke:#e8eef5;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="1200" height="1800" fill="url(#bg)"/>
+  <rect x="30" y="22" width="1140" height="72" rx="8" fill="#07101a" stroke="#9aa7b5" stroke-width="1.6"/>
+  <text x="58" y="68" class="mono title blue">&gt;_</text>
+  <text x="148" y="69" class="mono title">MANGA / LIGHT NOVEL CREATION WORKFLOW</text>
+
+  <g transform="translate(30 118)">
+    <rect class="box" width="1140" height="98" rx="8" stroke="#2598ff"/>
+    <text x="126" y="39" class="mono h blue">1. START PROJECT</text>
+    <text x="126" y="73" class="mono body">Create folder: story_9/</text>
+    <path d="M30 24h42a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H30a10 10 0 0 1-10-10V34a10 10 0 0 1 10-10z" fill="#3d94ed" filter="url(#glow)"/>
+  </g>
+  <path class="arrow" d="M600 216v22m-10-10 10 10 10-10"/>
+
+  <g transform="translate(30 244)">
+    <rect class="box" width="1140" height="134" rx="8" stroke="#76d84d"/>
+    <text x="126" y="42" class="mono h green">2. IDEA &amp; PREMISE</text>
+    <text x="132" y="82" class="mono body">• Generate ideas (reborn as a baby in a fantasy world with magic).</text>
+    <text x="132" y="116" class="mono body">• Choose one idea as the premise.</text>
+    <path d="M60 26c-23 0-42 19-42 42 0 17 10 31 24 38v25h36v-25c14-7 24-21 24-38 0-23-19-42-42-42z" fill="none" stroke="#76d84d" stroke-width="6"/>
+    <path d="M47 145h26M47 158h26" stroke="#76d84d" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <path class="arrow" d="M600 378v22m-10-10 10 10 10-10"/>
+
+  <g transform="translate(30 406)">
+    <rect class="box" width="1140" height="455" rx="8" stroke="#44a3ff"/>
+    <text x="126" y="42" class="mono h blue">3. DEFINE TERMS &amp; SETUP PROJECT</text>
+    <text x="132" y="82" class="mono body">• Define: Big P Plot, little p plot, Promises, Progress, Payoff.</text>
+    <text x="132" y="116" class="mono body">• Create core project structure and base documents.</text>
+    <path d="M38 24h42l24 24v68H38z" fill="none" stroke="#44a3ff" stroke-width="5"/>
+    <path d="M80 24v28h28M52 70h42M52 88h42M52 106h28" stroke="#44a3ff" stroke-width="4"/>
+    <g transform="translate(26 150)">
+      <rect class="sub" width="258" height="306" rx="7" stroke="#a577ff"/>
+      <text x="24" y="46" class="mono h purple">📁 worldbuilding/</text>
+      <text x="24" y="92" class="mono small">• setting.md</text>
+      <text x="24" y="124" class="mono small">• magic_system.md</text>
+      <text x="24" y="156" class="mono small">• history.md</text>
+      <text x="24" y="188" class="mono small">• factions.md</text>
+      <text x="24" y="220" class="mono small">• geography.md</text>
+      <text x="24" y="252" class="mono small">• religion.md</text>
+      <text x="24" y="284" class="mono small">• lore.md</text>
+    </g>
+    <g transform="translate(304 150)">
+      <rect class="sub" width="290" height="306" rx="7" stroke="#76d84d"/>
+      <text x="24" y="46" class="mono h green">📁 plot/</text>
+      <text x="24" y="92" class="mono small">• arc_outline.md</text>
+      <text x="24" y="124" class="mono small">• big_p_plot.md</text>
+      <text x="24" y="156" class="mono small">• little_p_plot.md</text>
+      <text x="24" y="188" class="mono small">• promises_progress_payoff.md</text>
+      <text x="24" y="220" class="mono small">• series_timeline.md</text>
+      <text x="24" y="252" class="mono small">• etc.</text>
+    </g>
+    <g transform="translate(610 150)">
+      <rect class="sub" width="254" height="306" rx="7" stroke="#ffc244"/>
+      <text x="24" y="46" class="mono h yellow">📁 characters/</text>
+      <text x="24" y="92" class="mono small">• protagonist.md</text>
+      <text x="24" y="124" class="mono small">• supporting_cast.md</text>
+      <text x="24" y="156" class="mono small">• antagonists.md</text>
+      <text x="24" y="188" class="mono small">• relationships.md</text>
+      <text x="24" y="220" class="mono small">• etc.</text>
+    </g>
+    <g transform="translate(882 150)">
+      <rect class="sub" width="230" height="306" rx="7" stroke="#44a3ff"/>
+      <text x="24" y="46" class="mono h blue">📁 changes/</text>
+      <text x="24" y="92" class="mono small">• changes.md</text>
+      <text x="24" y="124" class="mono small">(append-only log</text>
+      <text x="24" y="156" class="mono small">of all changes)</text>
+    </g>
+  </g>
+  <path class="arrow" d="M600 861v22m-10-10 10 10 10-10"/>
+
+  <g transform="translate(30 892)">
+    <rect class="box" width="1140" height="255" rx="8" stroke="#a577ff"/>
+    <text x="126" y="42" class="mono h purple">4. ITERATE, REVIEW &amp; PLAN</text>
+    <text x="132" y="82" class="mono body">• Build out worldbuilding, plot, and character details.</text>
+    <text x="132" y="116" class="mono body">• Review for consistency and improve.</text>
+    <text x="132" y="150" class="mono body">• Iterate more ideas / story beats.</text>
+    <text x="132" y="184" class="mono body">• Focus on Chapter 1 beats and target page length.</text>
+    <text x="132" y="218" class="mono body">• Create plans for first 3 chapters (Ch. 1–3).</text>
+    <path d="M34 54a42 42 0 0 1 72-28m0 0v-24m0 24H82M98 116a42 42 0 0 1-72 28m0 0v24m0-24h24" fill="none" stroke="#a577ff" stroke-width="6"/>
+  </g>
+  <path class="arrow" d="M600 1147v22m-10-10 10 10 10-10"/>
+
+  <g transform="translate(30 1178)">
+    <rect class="box" width="1140" height="184" rx="8" stroke="#35d3dc"/>
+    <text x="126" y="42" class="mono h cyan">5. BREAK DOWN EACH CHAPTER</text>
+    <text x="154" y="88" class="mono small">Scene Beat</text>
+    <text x="188" y="116" class="mono small">Sheets</text>
+    <rect x="126" y="58" width="188" height="78" rx="7" fill="none" stroke="#35d3dc"/>
+    <path class="arrow" d="M330 98h38m-12-12 12 12-12 12"/>
+    <rect x="396" y="58" width="210" height="78" rx="7" fill="none" stroke="#35d3dc"/>
+    <text x="432" y="88" class="mono small">Dialogue Pass &amp;</text>
+    <text x="438" y="116" class="mono small">Page Breakdown</text>
+    <path class="arrow" d="M624 98h38m-12-12 12 12-12 12"/>
+    <rect x="690" y="58" width="196" height="78" rx="7" fill="none" stroke="#35d3dc"/>
+    <text x="724" y="88" class="mono small">Panel Script /</text>
+    <text x="742" y="116" class="mono small">Storyboard</text>
+    <path class="arrow" d="M904 98h38m-12-12 12 12-12 12"/>
+    <rect x="970" y="58" width="178" height="78" rx="7" fill="none" stroke="#35d3dc"/>
+    <text x="1002" y="104" class="mono small">(per chapter)</text>
+    <text x="126" y="166" class="mono body">Follow the above pipeline for Ch. 1, then Ch. 2 and Ch. 3.</text>
+  </g>
+  <path class="arrow" d="M600 1362v22m-10-10 10 10 10-10"/>
+
+  <g transform="translate(30 1392)">
+    <rect class="box" width="1140" height="190" rx="8" stroke="#76d84d"/>
+    <text x="436" y="42" class="mono h green">6. RENDER COLORED MANGA PAGES (CH. 1)</text>
+    <text x="440" y="84" class="mono body">• Generate final colored manga pages for Chapter 1</text>
+    <text x="462" y="118" class="mono body">(one image per page).</text>
+    <text x="440" y="158" class="mono body">• Save in images/ and log prompts used (per page).</text>
+    <g transform="translate(48 30) rotate(-7)">
+      <rect width="116" height="142" fill="#f4f4f0" stroke="#dde5f0" stroke-width="3"/>
+      <rect x="9" y="10" width="98" height="118" fill="#ffd9c4"/>
+      <circle cx="58" cy="55" r="25" fill="#ffe0c8"/>
+      <text x="22" y="134" class="mono tiny" fill="#081018">page</text>
+    </g>
+    <g transform="translate(160 28) rotate(4)">
+      <rect width="116" height="142" fill="#f4f4f0" stroke="#dde5f0" stroke-width="3"/>
+      <rect x="9" y="10" width="98" height="118" fill="#8ec8ff"/>
+      <path d="M16 112 60 42l44 70z" fill="#f7df9e"/>
+    </g>
+    <g transform="translate(270 38) rotate(12)">
+      <rect width="116" height="142" fill="#f4f4f0" stroke="#dde5f0" stroke-width="3"/>
+      <rect x="9" y="10" width="98" height="118" fill="#211a45"/>
+      <path d="M58 24l12 42 42 12-42 12-12 42-12-42-42-12 42-12z" fill="#ffcf52"/>
+    </g>
+  </g>
+  <path class="arrow" d="M600 1582v22m-10-10 10 10 10-10"/>
+
+  <g transform="translate(30 1608)">
+    <rect width="1140" height="164" rx="8" fill="#07101a" fill-opacity=".7" stroke="#9aa7b5" stroke-width="2" stroke-dasharray="10 8"/>
+    <text x="132" y="58" class="mono h blue">OUTPUT</text>
+    <text x="132" y="96" class="mono body">Complete, organized foundation and</text>
+    <text x="132" y="130" class="mono body">first three chapters with Chapter 1</text>
+    <text x="132" y="164" class="mono body">colored manga pages.</text>
+    <text x="560" y="36" class="mono tiny yellow">📁 story_9/</text>
+    <text x="588" y="62" class="mono tiny">├─ 📁 worldbuilding/</text>
+    <text x="588" y="88" class="mono tiny">├─ 📁 plot/</text>
+    <text x="588" y="114" class="mono tiny">├─ 📁 characters/</text>
+    <text x="588" y="140" class="mono tiny">├─ 📁 chapters/</text>
+    <text x="588" y="166" class="mono tiny">├─ 📁 images/</text>
+    <text x="588" y="192" class="mono tiny">└─ 📁 changes/</text>
+    <text x="870" y="96" class="mono body">Everything organized</text>
+    <text x="870" y="130" class="mono body">and ready to continue</text>
+    <text x="870" y="164" class="mono body">your manga/light novel.</text>
+    <path d="M54 108c20-56 58-76 96-84-8 38-28 76-84 96l-34 34z" fill="none" stroke="#44a3ff" stroke-width="6"/>
+    <circle cx="112" cy="62" r="8" fill="#44a3ff"/>
+  </g>
+</svg>
