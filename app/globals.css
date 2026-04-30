@@ -1302,6 +1302,102 @@ h4 {
   margin-top: 1.5rem;
 }
 
+.manga-project-page,
+.dark .manga-project-page {
+  background: #06090d;
+}
+
+.manga-project-detail {
+  width: min(100%, 82rem);
+  padding-top: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.manga-project-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: clamp(1rem, 2vw, 1.75rem) 0 0;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 4vw, 4rem) clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: #f8fafc;
+  background:
+    linear-gradient(90deg, rgb(5 8 12 / 78%) 0%, rgb(5 8 12 / 58%) 42%, rgb(5 8 12 / 10%) 100%),
+    linear-gradient(180deg, rgb(5 8 12 / 8%) 0%, rgb(5 8 12 / 34%) 72%, #06090d 100%),
+    url("/Manga/project_hero.png");
+  background-position: center;
+  background-size: cover;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.manga-project-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 32% 28%, rgb(173 196 156 / 12%), transparent 24%),
+    linear-gradient(180deg, transparent 66%, rgb(6 9 13 / 82%) 100%);
+  content: "";
+}
+
+.manga-project-hero-content {
+  width: min(100%, 82rem);
+  margin-inline: auto;
+}
+
+.manga-project-hero .project-back-link {
+  margin-bottom: clamp(2.25rem, 5vw, 4rem);
+  color: rgb(248 250 252 / 78%);
+  background: rgb(6 9 13 / 42%);
+  border-color: rgb(255 255 255 / 14%);
+  backdrop-filter: blur(16px);
+}
+
+.manga-project-hero .eyebrow,
+.manga-project-hero h1,
+.manga-project-hero-content > p,
+.manga-project-hero .project-detail-tags {
+  max-width: min(48rem, 68%);
+}
+
+.manga-project-hero .eyebrow {
+  color: #b9d7a9;
+  text-shadow: 0 0 22px rgb(173 196 156 / 38%);
+}
+
+.manga-project-hero h1 {
+  margin-top: clamp(3.25rem, 6vw, 5rem);
+  font-size: clamp(3.7rem, 8vw, 7.75rem);
+  text-shadow: 0 0.35rem 1.6rem rgb(0 0 0 / 62%);
+}
+
+.manga-project-hero-content > p:last-of-type {
+  color: rgb(248 250 252 / 82%);
+  text-shadow: 0 0.2rem 0.8rem rgb(0 0 0 / 78%);
+}
+
+.manga-project-hero .timeline-pill,
+.manga-project-hero .demo-pill,
+.manga-project-hero .project-tag {
+  color: rgb(248 250 252 / 84%);
+  background: rgb(9 13 19 / 45%);
+  border-color: rgb(255 255 255 / 16%);
+  backdrop-filter: blur(14px);
+}
+
+.manga-project-hero .demo-pill {
+  color: #d1fae5;
+  background: rgb(20 83 45 / 62%);
+  border-color: rgb(52 211 153 / 46%);
+}
+
 .project-writeup,
 .project-media-panel,
 .project-links-panel,
@@ -1497,6 +1593,13 @@ h4 {
     grid-template-columns: 1fr;
   }
 
+  .manga-project-hero .eyebrow,
+  .manga-project-hero h1,
+  .manga-project-hero-content > p,
+  .manga-project-hero .project-detail-tags {
+    max-width: none;
+  }
+
   .hero-grid {
     min-height: auto;
     margin-top: 1.75rem;
@@ -1538,6 +1641,20 @@ h4 {
 
   .project-controls-header {
     align-items: stretch;
+  }
+
+  .manga-project-hero {
+    min-height: 0;
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.25rem);
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    background:
+      linear-gradient(90deg, rgb(5 8 12 / 84%) 0%, rgb(5 8 12 / 70%) 54%, rgb(5 8 12 / 22%) 100%),
+      linear-gradient(180deg, rgb(5 8 12 / 10%) 0%, rgb(5 8 12 / 42%) 72%, #06090d 100%),
+      url("/Manga/project_hero.png");
+    background-position: 64% center;
+    background-size: cover;
   }
 
   .reset-filters {
@@ -1626,6 +1743,27 @@ h4 {
 
   .project-controls {
     padding: 0.9rem;
+  }
+
+  .manga-project-detail {
+    padding-inline: 0.75rem;
+    padding-top: 0.75rem;
+  }
+
+  .manga-project-hero {
+    min-height: 0;
+    padding: 1.25rem 1rem 1.5rem;
+    background:
+      linear-gradient(90deg, rgb(5 8 12 / 88%) 0%, rgb(5 8 12 / 76%) 62%, rgb(5 8 12 / 30%) 100%),
+      linear-gradient(180deg, rgb(5 8 12 / 10%) 0%, rgb(5 8 12 / 48%) 70%, #06090d 100%),
+      url("/Manga/project_hero.png");
+    background-position: 70% center;
+    background-size: cover;
+  }
+
+  .manga-project-hero h1 {
+    margin-top: 2.35rem;
+    font-size: clamp(3.15rem, 13vw, 4.5rem);
   }
 
   .project-controls-header h3 {

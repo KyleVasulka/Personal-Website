@@ -109,7 +109,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   ];
 
   return (
-    <main className="site-shell project-page">
+    <main className={`site-shell project-page${hasMangaExplainer ? " manga-project-page" : ""}`}>
       <nav className="nav project-nav" aria-label="Primary navigation">
         <Link className="brand-mark" href="/" aria-label="Kyle Vasulka home">
           KV
@@ -122,37 +122,68 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </nav>
 
-      <article className="project-detail">
-        <Link className="project-back-link" href="/#work">
-          <ArrowLeft aria-hidden="true" />
-          Project history
-        </Link>
-
-        <header className="project-detail-header">
-          <p className="eyebrow">{project.sectionPeriod}</p>
-          <h1>{project.name}</h1>
-          <p>{project.description}</p>
-          <div className="project-detail-tags" aria-label="Project tags">
-            <span className="timeline-pill">{project.timeline}</span>
-            <span className="demo-pill" data-has-demo={project.hasDemo}>
-              {project.hasDemo ? "Demo" : "No demo listed"}
-            </span>
-            {project.useCases.map((tag) => (
-              <span className="project-tag" data-tag-kind="use-case" key={tag}>
-                {tag}
+      {hasMangaExplainer && (
+        <header className="project-detail-header manga-project-hero">
+          <div className="manga-project-hero-content">
+            <Link className="project-back-link" href="/#work">
+              <ArrowLeft aria-hidden="true" />
+              Project history
+            </Link>
+            <p className="eyebrow">{project.sectionPeriod}</p>
+            <h1>{project.name}</h1>
+            <p>{project.description}</p>
+            <div className="project-detail-tags" aria-label="Project tags">
+              <span className="timeline-pill">{project.timeline}</span>
+              <span className="demo-pill" data-has-demo={project.hasDemo}>
+                {project.hasDemo ? "Demo" : "No demo listed"}
               </span>
-            ))}
-            {project.techStack.map((tag) => (
-              <span className="project-tag" data-tag-kind="tech" key={tag}>
-                {tag}
-              </span>
-            ))}
+              {project.useCases.map((tag) => (
+                <span className="project-tag" data-tag-kind="use-case" key={tag}>
+                  {tag}
+                </span>
+              ))}
+              {project.techStack.map((tag) => (
+                <span className="project-tag" data-tag-kind="tech" key={tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         </header>
+      )}
+
+      <article className={`project-detail${hasMangaExplainer ? " manga-project-detail" : ""}`}>
+        {!hasMangaExplainer && (
+          <header className="project-detail-header">
+            <Link className="project-back-link" href="/#work">
+              <ArrowLeft aria-hidden="true" />
+              Project history
+            </Link>
+            <p className="eyebrow">{project.sectionPeriod}</p>
+            <h1>{project.name}</h1>
+            <p>{project.description}</p>
+            <div className="project-detail-tags" aria-label="Project tags">
+              <span className="timeline-pill">{project.timeline}</span>
+              <span className="demo-pill" data-has-demo={project.hasDemo}>
+                {project.hasDemo ? "Demo" : "No demo listed"}
+              </span>
+              {project.useCases.map((tag) => (
+                <span className="project-tag" data-tag-kind="use-case" key={tag}>
+                  {tag}
+                </span>
+              ))}
+              {project.techStack.map((tag) => (
+                <span className="project-tag" data-tag-kind="tech" key={tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </header>
+        )}
 
         <section className="project-writeup" aria-label={`${project.name} writeup`}>
           <div>
-            <p className="eyebrow">Writeup</p>
+            <p className="eyebrow">{hasMangaExplainer ? "The Project" : "Writeup"}</p>
             <h2>What this project explored</h2>
           </div>
           <div className="project-writeup-body">
