@@ -1,0 +1,7 @@
+# The Cradle That Heard the Stars
+
+Elias Rowan dies trying to save rare manuscripts and wakes again as Lio Veyr, a baby in a disgraced spell-scribe family. Bellwether House is weathered, poor, and full of hidden records: a leaking manor in Western Orlan with a nursery above a sealed starwell shaft, a broken silver bell that rings without wind, and a library richer than the family's purse. Lio's adult patience and archivist instincts make him dangerous in a world where babies are expected to babble, not study living light.
+
+Magic in Asterfall is lumen-craft, shaped through attention, rhythm, and record. Lio hides experiments inside coos, hiccups, lullaby echoes, and grasping motions, but every success leaves traces: glimmering eyes, nursery motes, bell sounds, and memory projections from the starwell below. The Candle Church calls memories before birth possession, while the High Lyceum catalogs relics in the name of safety. Both institutions would see Lio and the starwell as something to control.
+
+As Lio uncovers why House Veyr was disgraced and why a forbidden index lies beneath his home, he faces the same moral trap that defined his former life: preserving knowledge is not enough if people are sacrificed to protect it. To save Bellwether House, he must learn starwell magic without letting the Church, Lyceum, or his own ambitious relatives turn dangerous memory into a political weapon.
