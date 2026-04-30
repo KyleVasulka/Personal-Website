@@ -1230,19 +1230,45 @@ h4 {
 }
 
 .project-page {
+  position: relative;
+  overflow: hidden;
   background:
-    linear-gradient(135deg, rgb(255 255 255 / 84%), rgb(247 247 242 / 76%)),
-    url("/hero-pattern.svg");
+    radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--color-ring) 10%, transparent), transparent 24%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-background) 96%, transparent), var(--color-background));
   background-attachment: fixed;
   background-size: cover;
 }
 
 .dark .project-page {
   background:
-    linear-gradient(135deg, rgb(16 17 20 / 94%), rgb(16 17 20 / 86%)),
-    url("/hero-pattern.svg");
+    radial-gradient(circle at 50% 8%, color-mix(in srgb, var(--color-ring) 10%, transparent), transparent 24%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-background) 96%, transparent), var(--color-background));
   background-attachment: fixed;
   background-size: cover;
+}
+
+.project-page::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, var(--color-background), transparent 16%, transparent 82%, var(--color-background)),
+    radial-gradient(circle at 16% 22%, color-mix(in srgb, var(--color-background) 62%, transparent), transparent 28%);
+  transform: translateX(-50%);
+  content: "";
+}
+
+.project-page > :not(.history-particle-field) {
+  position: relative;
+  z-index: 1;
+}
+
+.project-page .history-particle-field {
+  opacity: 0.62;
 }
 
 .project-nav {
@@ -1304,12 +1330,34 @@ h4 {
 
 .manga-project-page,
 .dark .manga-project-page {
-  background: #06090d;
+  background:
+    radial-gradient(circle at 50% 8%, rgb(143 180 255 / 10%), transparent 24%),
+    linear-gradient(180deg, rgb(6 9 13 / 96%), #06090d);
 }
 
 .manga-project-detail {
+  position: relative;
   width: min(100%, 82rem);
   padding-top: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.manga-project-detail::before {
+  position: absolute;
+  top: -0.1rem;
+  bottom: auto;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  height: clamp(9rem, 20vw, 18rem);
+  pointer-events: none;
+  background: linear-gradient(180deg, #06090d 0%, rgb(6 9 13 / 94%) 24%, rgb(6 9 13 / 0%) 100%);
+  transform: translateX(-50%);
+  content: "";
+}
+
+.manga-project-detail > * {
+  position: relative;
+  z-index: 1;
 }
 
 .manga-project-hero {

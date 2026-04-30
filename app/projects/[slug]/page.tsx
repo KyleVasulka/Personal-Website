@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Mail } from "lucide-react";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
+import { HistoryParticleField } from "@/components/history-particle-field";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getProjectBySlug, getRelatedProjects, projects } from "@/lib/projects";
@@ -110,6 +111,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <main className={`site-shell project-page${hasMangaExplainer ? " manga-project-page" : ""}`}>
+      <HistoryParticleField />
       <nav className="nav project-nav" aria-label="Primary navigation">
         <Link className="brand-mark" href="/" aria-label="Kyle Vasulka home">
           KV
