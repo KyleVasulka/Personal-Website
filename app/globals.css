@@ -1683,6 +1683,16 @@ h4 {
   }
 }
 
+@keyframes manga-description-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(min(0px, calc(100cqh - 100%)));
+  }
+}
+
 @keyframes hero-float {
   0%,
   100% {
@@ -1932,8 +1942,9 @@ h4 {
 .manga-card-description {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: end;
+  container-type: size;
+  display: block;
+  overflow: hidden;
   padding: 1rem;
   background: linear-gradient(180deg, rgb(0 0 0 / 8%), rgb(0 0 0 / 82%));
   color: #ffffff;
@@ -1946,6 +1957,22 @@ h4 {
     transform 180ms ease;
 }
 
+.manga-card-description > span {
+  display: block;
+  transform: translateY(0);
+}
+
+.manga-card-description::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2.25rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgb(0 0 0 / 78%));
+  content: "";
+}
+
 .manga-card:hover .manga-card-image img,
 .manga-card:focus-visible .manga-card-image img {
   transform: scale(1.035);
@@ -1955,6 +1982,11 @@ h4 {
 .manga-card:focus-visible .manga-card-description {
   opacity: 1;
   transform: translateY(0);
+}
+
+.manga-card:hover .manga-card-description > span,
+.manga-card:focus-visible .manga-card-description > span {
+  animation: manga-description-scroll 8s ease-in-out 500ms infinite alternate;
 }
 
 .manga-card:focus-visible {
@@ -2216,12 +2248,22 @@ h4 {
   .manga-card-description {
     position: static;
     display: block;
+    overflow: visible;
     padding: 0.75rem;
     background: color-mix(in srgb, var(--color-card) 88%, transparent);
     color: var(--color-muted-foreground);
     opacity: 1;
     transform: none;
     font-size: 0.82rem;
+  }
+
+  .manga-card-description::after {
+    display: none;
+  }
+
+  .manga-card-description > span {
+    animation: none;
+    transform: none;
   }
 
   .manga-card:hover .manga-card-image img {

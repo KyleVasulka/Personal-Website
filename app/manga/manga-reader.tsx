@@ -860,7 +860,7 @@ export function MangaReader({
                 )}
                 {story.description && (
                   <span className="manga-card-description">
-                    {stripMarkdown(story.description)}
+                    <span>{stripMarkdown(story.description)}</span>
                   </span>
                 )}
               </span>
