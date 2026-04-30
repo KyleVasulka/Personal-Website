@@ -5,7 +5,9 @@
     "node": "24.x"
   },
   "scripts": {
+    "predev": "node scripts/generate-manga-library.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/generate-manga-library.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
