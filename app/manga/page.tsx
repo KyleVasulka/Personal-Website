@@ -4,9 +4,21 @@ import type { Metadata } from "next";
 import { MangaReader, type MangaStory } from "./manga-reader";
 
 export const metadata: Metadata = {
-  title: "Manga Library | Kyle Vasulka",
+  title: "AI Manga Library | Kyle Vasulka",
   description:
-    "A demo manga library that loads local story folders and supports scroll reading.",
+    "Browse original AI-generated manga stories in a smooth web reader built for scrolling, zooming, and mobile reading.",
+  openGraph: {
+    title: "AI Manga Library | Kyle Vasulka",
+    description:
+      "Browse original AI-generated manga stories in a smooth web reader built for scrolling, zooming, and mobile reading.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Manga Library | Kyle Vasulka",
+    description:
+      "Browse original AI-generated manga stories in a smooth web reader built for scrolling, zooming, and mobile reading.",
+  },
 };
 
 const mangaDirectory = join(process.cwd(), "public", "Manga");
