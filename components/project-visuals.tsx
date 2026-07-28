@@ -1,11 +1,42 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import * as THREE from "three";
 
+const harmonicSlides = [
+  {
+    src: "/harmonic-piano-mockup.svg",
+    alt: "Harmonic Piano synthesizer interface mockup",
+    label: "Interface concept",
+  },
+  {
+    src: "/harmonic-piano-cinematic.svg",
+    alt: "Cinematic Harmonic Piano hardware and interface concept",
+    label: "Product vision",
+  },
+];
+
 export function HarmonicPianoShowcase() {
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reduceMotion) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % harmonicSlides.length);
+    }, 5200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   return (
     <section className="feature-showcase" data-reveal>
       <div className="feature-copy">
@@ -28,13 +59,30 @@ export function HarmonicPianoShowcase() {
         </div>
       </div>
       <div className="piano-mockup-frame">
-        <Image
-          alt="Harmonic Piano synthesizer mockup"
-          height={820}
-          loading="eager"
-          src="/harmonic-piano-mockup.svg"
-          width={1440}
-        />
+        <div className="piano-carousel" aria-live="polite">
+          {harmonicSlides.map((slide, index) => (
+            <Image
+              alt={slide.alt}
+              className={index === activeSlide ? "is-active" : ""}
+              height={820}
+              key={slide.src}
+              loading="eager"
+              src={slide.src}
+              width={1440}
+            />
+          ))}
+        </div>
+        <div className="piano-carousel-controls" aria-label="Harmonic Piano visuals">
+          {harmonicSlides.map((slide, index) => (
+            <button
+              aria-label={`Show ${slide.label}`}
+              aria-pressed={index === activeSlide}
+              key={slide.src}
+              onClick={() => setActiveSlide(index)}
+              type="button"
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

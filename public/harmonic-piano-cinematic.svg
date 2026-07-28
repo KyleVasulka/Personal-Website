@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 820" role="img" aria-label="Cinematic Harmonic Piano product concept">
+  <defs>
+    <radialGradient id="lamp" cx="85%" cy="22%" r="28%">
+      <stop offset="0" stop-color="#f5b56d" stop-opacity=".55"/>
+      <stop offset=".55" stop-color="#f5b56d" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="room" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#050504"/>
+      <stop offset=".48" stop-color="#120d09"/>
+      <stop offset="1" stop-color="#050504"/>
+    </linearGradient>
+    <linearGradient id="wood2" x1="0" x2="1">
+      <stop offset="0" stop-color="#2b1308"/>
+      <stop offset=".22" stop-color="#70421e"/>
+      <stop offset=".56" stop-color="#bd8046"/>
+      <stop offset="1" stop-color="#2d1609"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#020716"/>
+      <stop offset=".65" stop-color="#080b19"/>
+      <stop offset="1" stop-color="#11141e"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+    <filter id="cyanGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feColorMatrix in="b" values="0 0 0 0 0.08 0 0 0 0 0.8 0 0 0 0 1 0 0 0 .9 0"/>
+      <feBlend in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="820" fill="url(#room)"/>
+  <rect width="1440" height="820" fill="url(#lamp)"/>
+  <ellipse cx="1120" cy="700" rx="420" ry="130" fill="#000" opacity=".55" filter="url(#soft)"/>
+  <g transform="translate(55 72)">
+    <text x="0" y="0" fill="#efb184" font-family="Arial, Helvetica, sans-serif" font-size="44" letter-spacing="14">HARMONIC</text>
+    <text x="0" y="62" fill="#efb184" font-family="Arial, Helvetica, sans-serif" font-size="44" letter-spacing="14">PIANO</text>
+    <text x="0" y="118" fill="#efb184" font-family="Arial, Helvetica, sans-serif" font-size="18" letter-spacing="5">SCULPT THE HARMONICS.</text>
+    <text x="0" y="148" fill="#efb184" font-family="Arial, Helvetica, sans-serif" font-size="18" letter-spacing="5">SHAPE THE SOUL.</text>
+    <text x="0" y="205" fill="#d6cec1" font-family="Arial, Helvetica, sans-serif" font-size="17">Design the harmonic content of every note.</text>
+    <text x="0" y="232" fill="#d6cec1" font-family="Arial, Helvetica, sans-serif" font-size="17">Draw your sound. Play your world.</text>
+  </g>
+  <g transform="translate(300 58)">
+    <path d="M76 512c40 58 693 98 892 44 45-12 72-53 67-101L996 118c-4-36-33-65-69-68L210 0c-49-3-92 32-99 81L65 403c-5 38-1 77 11 109Z" fill="url(#wood2)" stroke="#edaa65" stroke-width="2"/>
+    <path d="M170 58l738 53c27 2 48 25 46 53l-19 257c-2 28-26 49-54 47l-737-53c-28-2-49-26-47-54l19-256c2-28 26-49 54-47Z" fill="#090909" stroke="#262320" stroke-width="6"/>
+    <path d="M196 95l565 41-18 230-565-41 18-230Z" fill="url(#panel)" stroke="#1a3651"/>
+    <g stroke="#2edcff" stroke-width="3" fill="none" filter="url(#cyanGlow)">
+      <path d="M226 244c34-104 58-18 89-80 20 67 52 8 72 74 28-50 58 26 92-24 27 51 63-2 91 45 30-23 78 38 132 22"/>
+    </g>
+    <g fill="#2edcff" opacity=".75">
+      <rect x="220" y="292" width="26" height="92" rx="4"/>
+      <rect x="260" y="318" width="26" height="66" rx="4"/>
+      <rect x="300" y="340" width="26" height="44" rx="4"/>
+      <rect x="340" y="350" width="26" height="34" rx="4"/>
+      <rect x="380" y="358" width="26" height="26" rx="4"/>
+      <rect x="420" y="363" width="26" height="21" rx="4"/>
+      <rect x="460" y="368" width="26" height="16" rx="4"/>
+      <rect x="500" y="372" width="26" height="12" rx="4"/>
+      <rect x="540" y="375" width="26" height="9" rx="4"/>
+    </g>
+    <g transform="translate(780 150)" fill="#0d0f12" stroke="#303238">
+      <rect width="140" height="245" rx="12"/>
+      <text x="20" y="34" fill="#d6cec1" font-family="Arial" font-size="13" letter-spacing="3">PRESETS</text>
+      <rect x="18" y="58" width="104" height="30" rx="5" fill="#182237"/>
+      <text x="30" y="78" fill="#f6efe5" font-family="Arial" font-size="13">Warm Pad</text>
+      <text x="30" y="118" fill="#d6cec1" font-family="Arial" font-size="13">Bright Bell</text>
+      <text x="30" y="158" fill="#d6cec1" font-family="Arial" font-size="13">Dark Bass</text>
+      <text x="30" y="198" fill="#d6cec1" font-family="Arial" font-size="13">Glass</text>
+    </g>
+    <path d="M134 418c113 20 542 48 780 49l-6 100c-220 47-647 27-786-35l12-114Z" fill="#090909" stroke="#211f1f" stroke-width="5"/>
+    <g transform="translate(148 436) rotate(3)">
+      <g fill="#f1eadf">
+        <rect x="0" y="0" width="29" height="86"/><rect x="33" y="0" width="29" height="86"/><rect x="66" y="0" width="29" height="86"/><rect x="99" y="0" width="29" height="86"/><rect x="132" y="0" width="29" height="86"/><rect x="165" y="0" width="29" height="86"/><rect x="198" y="0" width="29" height="86"/><rect x="231" y="0" width="29" height="86"/><rect x="264" y="0" width="29" height="86"/><rect x="297" y="0" width="29" height="86"/><rect x="330" y="0" width="29" height="86"/><rect x="363" y="0" width="29" height="86"/><rect x="396" y="0" width="29" height="86"/><rect x="429" y="0" width="29" height="86"/><rect x="462" y="0" width="29" height="86"/><rect x="495" y="0" width="29" height="86"/><rect x="528" y="0" width="29" height="86"/><rect x="561" y="0" width="29" height="86"/><rect x="594" y="0" width="29" height="86"/><rect x="627" y="0" width="29" height="86"/><rect x="660" y="0" width="29" height="86"/><rect x="693" y="0" width="29" height="86"/></g>
+      <g fill="#020202">
+        <rect x="22" y="0" width="18" height="55"/><rect x="85" y="0" width="18" height="55"/><rect x="118" y="0" width="18" height="55"/><rect x="184" y="0" width="18" height="55"/><rect x="217" y="0" width="18" height="55"/><rect x="283" y="0" width="18" height="55"/><rect x="316" y="0" width="18" height="55"/><rect x="382" y="0" width="18" height="55"/><rect x="415" y="0" width="18" height="55"/><rect x="481" y="0" width="18" height="55"/><rect x="514" y="0" width="18" height="55"/><rect x="580" y="0" width="18" height="55"/><rect x="613" y="0" width="18" height="55"/><rect x="679" y="0" width="18" height="55"/></g>
+    </g>
+    <path d="M150 538c170 48 603 64 755 27" stroke="#eda75f" stroke-width="4" opacity=".85"/>
+  </g>
+  <g transform="translate(48 630)">
+    <rect x="0" y="0" width="1344" height="118" rx="14" fill="#080807" stroke="#805332"/>
+    <path d="M336 0v118M672 0v118M1008 0v118" stroke="#805332"/>
+    <g fill="#f0b477" font-family="Arial" font-size="18" letter-spacing="4">
+      <text x="30" y="40">DRAW HARMONICS</text>
+      <text x="366" y="40">ENVELOPE CONTROLS</text>
+      <text x="702" y="40">PLAY AND LISTEN</text>
+      <text x="1038" y="40">SAVE AND EXPLORE</text>
+    </g>
+    <g fill="#d6cec1" font-family="Arial" font-size="16">
+      <text x="30" y="72">Intuitive spectral drawing.</text>
+      <text x="366" y="72">Shape how your sound evolves.</text>
+      <text x="702" y="72">Hear designs across the range.</text>
+      <text x="1038" y="72">Organize and reuse sounds.</text>
+    </g>
+  </g>
+</svg>

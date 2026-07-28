@@ -28,14 +28,16 @@ export function ScrollReveal() {
         });
       },
       {
-        rootMargin: "-8% 0px -18%",
-        threshold: 0.18,
+        rootMargin: "0px 0px -12% 0px",
+        threshold: 0.01,
       },
     );
 
     elements.forEach((element) => observer.observe(element));
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return null;

@@ -366,7 +366,7 @@ export default function Home() {
               className="history-band"
               data-reveal
               key={section.period}
-              style={{ "--reveal-delay": `${sectionIndex * 80}ms` } as React.CSSProperties}
+              style={{ "--reveal-delay": `${sectionIndex * 30}ms` } as React.CSSProperties}
             >
               <div className="history-band-header">
                 <p className="eyebrow">{section.period}</p>
@@ -380,7 +380,7 @@ export default function Home() {
                     key={item.name}
                     style={
                       {
-                        "--reveal-delay": `${Math.min(itemIndex, 6) * 45}ms`,
+                        "--reveal-delay": `${Math.min(itemIndex, 4) * 18}ms`,
                       } as React.CSSProperties
                     }
                   >
